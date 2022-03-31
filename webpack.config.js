@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './client/client.js',
+    entry: './client/game.js',
     mode: 'production',
     watchOptions: {
         aggregateTimeout: 200,

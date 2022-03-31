@@ -14,7 +14,8 @@
     "start": "node ./server/app.js",
     "pretest": "eslint ./server --fix",
     "test": "echo \"Tests complete\"",
-    "heroku-postbuild": "webpack"
+    "heroku-postbuild": "webpack",
+    "wps": "npm run webpack && npm start"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "ably": "^1.2.17",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
     "compression": "^1.7.4",
@@ -42,6 +44,8 @@
     "express-session": "^1.17.2",
     "helmet": "^5.0.2",
     "mongoose": "^6.2.7",
+    "p2": "^0.7.1",
+    "phaser": "^3.55.2",
     "redis": "^4.0.4",
     "serve-favicon": "^2.5.0",
     "underscore": "^1.13.2"
