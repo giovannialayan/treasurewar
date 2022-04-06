@@ -27,7 +27,8 @@ let config = {
 const playerSpeed = 300;
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
-const letters = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm'];
+const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
+const totalNumTreasures = 10;
 
 let player;
 let treasures;
@@ -58,9 +59,9 @@ function create() {
 
     this.cameras.main.setBackgroundColor('#863b00');
 
-    this.physics.world.setBounds(0, 0, 1000, 1000);
+    this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
-    player = this.physics.add.sprite(500, 500, 'player');
+    player = this.physics.add.sprite(worldWidth / 2, worldHeight / 2, 'player');
 
     player.setBounce(0);
     player.setCollideWorldBounds(true);
@@ -71,7 +72,7 @@ function create() {
 
     treasures = this.physics.add.group({
         key: 'treasure',
-        repeat: 8
+        repeat: totalNumTreasures - 1
     });
 
     treasures.children.iterate((treasure) => {
@@ -84,10 +85,10 @@ function create() {
 
     scoreText = this.add.text(16, 16, score, {fontSize: '32px', fill: '#000'});
 
-    gameTimer = 120;
+    gameTimer = 240;
     gameTimerText = this.add.text(player.body.position.x, player.body.position.y - 255, secToMinSec(gameTimer), {fontSize: '32px', fill: '#000'});
 
-    challengeText = this.add.text(player.body.position.x, player.body.position.y + 50, '', {fontSize: '40px', fill: '#000', align: 'center'});
+    challengeText = this.add.text(player.body.position.x + player.body.width / 2, player.body.position.y + 100, '', {fontSize: '40px', fill: '#000', align: 'center'});
 
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
@@ -123,20 +124,20 @@ function create() {
 }
 
 function update() {
-    if(cursors.left.isDown) {
+    if(cursors.left.isDown && !challengeActive) {
         player.setVelocityX(-playerSpeed);
     }
-    else if(cursors.right.isDown) {
+    else if(cursors.right.isDown && !challengeActive) {
         player.setVelocityX(playerSpeed);
     }
     else {
         player.setVelocityX(0);
     }
 
-    if(cursors.up.isDown) {
+    if(cursors.up.isDown && !challengeActive) {
         player.setVelocityY(-playerSpeed);
     }
-    else if(cursors.down.isDown) {
+    else if(cursors.down.isDown && !challengeActive) {
         player.setVelocityY(playerSpeed);
     }
     else {
@@ -161,6 +162,10 @@ function update() {
     }
 
     gameTimer -= dt;
+    if(gameTimer < 0)
+    {
+        gameTimer = 0;
+    }
     gameTimerText.setText(secToMinSec(gameTimer));
 
     scoreText.x = player.body.position.x - 350;
@@ -169,8 +174,12 @@ function update() {
     gameTimerText.x = player.body.position.x;
     gameTimerText.y = player.body.position.y - 255;
 
-    challengeText.x = player.body.position.x;
-    challengeText.y = player.body.position.y + 50;
+    challengeText.x = player.body.position.x + player.body.width / 2 - challengeText.displayWidth / 2;
+    challengeText.y = player.body.position.y + 100;
+
+    if(score >= totalNumTreasures || gameTimer <= 0) {
+        this.scene.restart();
+    }
 }
 
 function collectTreasure(treasure) {
