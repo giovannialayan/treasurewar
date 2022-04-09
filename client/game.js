@@ -30,7 +30,6 @@ const maxChallengeLen = 8;
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 const totalNumTreasures = 10;
 
-let player;
 let treasures;
 let cursors;
 let spacebar;
@@ -50,25 +49,53 @@ function preload() {
     this.load.setBaseURL('');
 
     this.load.image('background', '/assets/img/background.png');
-    this.load.image('player', '/assets/img/player.png');
-    this.load.image('treasure', '/assets/img/treasure.png');
+    this.load.image('player', '/assets/img/robot.png');
+    this.load.image('treasure', '/assets/img/treasure-mound.png');
 }
 
 function create() {
+    const scene = this;
+    this.socket = io();
+    this.otherPlayers = this.physics.add.group();
+
+    this.socket.on('currentPlayers', (players) => {
+        Object.keys(players).forEach((id) => {
+            if(players[id].playerId === scene.socket.id) {
+                addPlayer(scene, players[id]);
+            }
+            else {
+                addOtherPlayer(scene, players[id]);
+            }
+        });
+    });
+
+    this.socket.on('newPlayer', (playerInfo) => {
+        addOtherPlayer(scene, playerInfo);
+    });
+
+    this.socket.on('playerDisconnected', (playerId) => {
+        scene.otherPlayers.getChildren().forEach((otherPlayer) => {
+            if(playerId === otherPlayer.playerId) {
+                otherPlayer.destroy();
+            }
+        });
+    });
+
+    cursors = this.input.keyboard.createCursorKeys();
+
+    this.socket.on('playerMoved', (playerInfo) => {
+        scene.otherPlayers.getChildren().forEach((otherPlayer) => {
+            if(playerInfo.playerId === otherPlayer.playerId) {
+                otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+            }
+        });
+    });
+
     this.add.image(500, 500, 'background');
 
     this.cameras.main.setBackgroundColor('#863b00');
 
     this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
-
-    player = this.physics.add.sprite(worldWidth / 2, worldHeight / 2, 'player');
-
-    player.setBounce(0);
-    player.setCollideWorldBounds(true);
-
-    this.cameras.main.startFollow(player);
-    
-    cursors = this.input.keyboard.createCursorKeys();
 
     treasures = this.physics.add.group({
         key: 'treasure',
@@ -86,10 +113,10 @@ function create() {
     scoreText = this.add.text(16, 16, score, {fontSize: '32px', fill: '#000'});
 
     gameTimer = 240;
-    gameTimerText = this.add.text(player.body.position.x, player.body.position.y - 255, secToMinSec(gameTimer), {fontSize: '32px', fill: '#000'});
+    gameTimerText = scene.add.text(500, 245, secToMinSec(gameTimer), {fontSize: '32px', fill: '#000'});
 
-    challengeText = this.add.text(player.body.position.x + player.body.width / 2, player.body.position.y + 100, '', {fontSize: '40px', fill: '#000', align: 'center'});
-
+    challengeText = scene.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center'});
+    
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     challengeActive = false;
@@ -124,29 +151,33 @@ function create() {
 }
 
 function update() {
+    if(!this.player) {
+        return;
+    }
+
     if(cursors.left.isDown && !challengeActive) {
-        player.setVelocityX(-playerSpeed);
+        this.player.setVelocityX(-playerSpeed);
     }
     else if(cursors.right.isDown && !challengeActive) {
-        player.setVelocityX(playerSpeed);
+        this.player.setVelocityX(playerSpeed);
     }
     else {
-        player.setVelocityX(0);
+        this.player.setVelocityX(0);
     }
 
     if(cursors.up.isDown && !challengeActive) {
-        player.setVelocityY(-playerSpeed);
+        this.player.setVelocityY(-playerSpeed);
     }
     else if(cursors.down.isDown && !challengeActive) {
-        player.setVelocityY(playerSpeed);
+        this.player.setVelocityY(playerSpeed);
     }
     else {
-        player.setVelocityY(0);
+        this.player.setVelocityY(0);
     }
 
     if(Phaser.Input.Keyboard.JustDown(spacebar) && !challengeActive) {
         treasures.children.iterate((treasure) => {
-            this.physics.world.overlap(player, treasure, startChallenge);
+            this.physics.world.overlap(this.player, treasure, startChallenge);
         });
     }
 
@@ -168,22 +199,32 @@ function update() {
     }
     gameTimerText.setText(secToMinSec(gameTimer));
 
-    scoreText.x = player.body.position.x - 350;
-    scoreText.y = player.body.position.y - 255;
+    scoreText.x = this.player.body.position.x - 350;
+    scoreText.y = this.player.body.position.y - 255;
 
-    gameTimerText.x = player.body.position.x;
-    gameTimerText.y = player.body.position.y - 255;
+    gameTimerText.x = this.player.body.position.x;
+    gameTimerText.y = this.player.body.position.y - 255;
 
-    challengeText.x = player.body.position.x + player.body.width / 2 - challengeText.displayWidth / 2;
-    challengeText.y = player.body.position.y + 100;
+    challengeText.x = this.player.body.position.x + this.player.body.width / 2 - challengeText.displayWidth / 2;
+    challengeText.y = this.player.body.position.y + 100;
 
     if(score >= totalNumTreasures || gameTimer <= 0) {
         this.scene.restart();
     }
+
+
+    if(this.player.oldPosition && (this.player.body.position.x !== this.player.oldPosition.x || this.player.body.position.y !== this.player.oldPosition.y)) {
+        this.socket.emit('playerMovement', {x: this.player.body.position.x, y: this.player.body.position.y});
+    }
+
+    this.player.oldPosition = {
+        x: this.player.body.position.x,
+        y: this.player.body.position.y,
+    };
 }
 
 function collectTreasure(treasure) {
-    treasure.disableBody(true, true);
+    treasure.destroy();
 
     score++;
     scoreText.setText(score);
@@ -214,4 +255,19 @@ function secToMinSec(secs) {
     let min = Math.floor(secs/60);
     let sec = Math.floor(secs % 60);
     return `${min}:${sec < 10 ? '0' + sec : sec}`;
+}
+
+function addPlayer(scene, playerInfo) {
+    scene.player = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+
+    scene.player.setBounce(0);
+    scene.player.setCollideWorldBounds(true);
+
+    scene.cameras.main.startFollow(scene.player);
+}
+
+function addOtherPlayer(scene, playerInfo) {
+    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+    otherPlayer.playerId = playerInfo.playerId;
+    scene.otherPlayers.add(otherPlayer);
 }
