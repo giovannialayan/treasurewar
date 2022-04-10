@@ -1,4 +1,4 @@
-const Phaser = require('phaser');
+//const Phaser = require('phaser');
 
 const gameWidth = 800;
 const gameHeight = 600;
@@ -30,12 +30,10 @@ const maxChallengeLen = 8;
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 const totalNumTreasures = 10;
 
-let treasures;
 let cursors;
 let spacebar;
 let score;
 let scoreText;
-let gameTimer;
 let gameTimerText;
 let letterKeys;
 let challengeActive;
@@ -51,6 +49,7 @@ function preload() {
     this.load.image('background', '/assets/img/background.png');
     this.load.image('player', '/assets/img/robot.png');
     this.load.image('treasure', '/assets/img/treasure-mound.png');
+    this.load.image('amogus', '/assets/img/sus.png');
 }
 
 function create() {
@@ -91,29 +90,41 @@ function create() {
         });
     });
 
+    this.gameTimer = 240;
+
+    this.socket.on('timerTicked', (time) => {
+        scene.gameTimer = time;
+        gameTimerText.setText(secToMinSec(scene.gameTimer));
+    });
+
+    this.treasures = this.physics.add.group();
+
+    this.socket.on('placeTreasures', (treasures) => {
+        treasures.forEach((treasureData) => {addTreasure(scene, treasureData);});
+    });
+
+    this.socket.on('treasureRemoved', (treasureData) => {
+        const treasureToDestroy = scene.treasures.getChildren().find(treasure => treasure._id === treasureData._id);
+
+        if(challengeActive && currentChallengeTreasure === treasureToDestroy) {
+            challengeActive = false;
+            challengeText.setText('');
+        }
+
+        treasureToDestroy.destroy();
+    });
+
     this.add.image(500, 500, 'background');
 
     this.cameras.main.setBackgroundColor('#863b00');
 
     this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
-    treasures = this.physics.add.group({
-        key: 'treasure',
-        repeat: totalNumTreasures - 1
-    });
-
-    treasures.children.iterate((treasure) => {
-        treasure.x = Phaser.Math.Between(0 + treasure.displayWidth / 2, worldWidth - treasure.displayWidth / 2);
-        treasure.y = Phaser.Math.Between(0 + treasure.displayHeight / 2, worldHeight - treasure.displayHeight / 2);
-        treasure.challenge = createChallenge();
-    });
-
     score = 0;
 
     scoreText = this.add.text(16, 16, score, {fontSize: '32px', fill: '#000'});
 
-    gameTimer = 240;
-    gameTimerText = scene.add.text(500, 245, secToMinSec(gameTimer), {fontSize: '32px', fill: '#000'});
+    gameTimerText = scene.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000'});
 
     challengeText = scene.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center'});
     
@@ -176,7 +187,7 @@ function update() {
     }
 
     if(Phaser.Input.Keyboard.JustDown(spacebar) && !challengeActive) {
-        treasures.children.iterate((treasure) => {
+        this.treasures.children.iterate((treasure) => {
             this.physics.world.overlap(this.player, treasure, startChallenge);
         });
     }
@@ -192,12 +203,12 @@ function update() {
         }
     }
 
-    gameTimer -= dt;
-    if(gameTimer < 0)
-    {
-        gameTimer = 0;
-    }
-    gameTimerText.setText(secToMinSec(gameTimer));
+    // this.gameTimer -= dt;
+    // if(this.gameTimer < 0)
+    // {
+    //     this.gameTimer = 0;
+    // }
+    // gameTimerText.setText(secToMinSec(this.gameTimer));
 
     scoreText.x = this.player.body.position.x - 350;
     scoreText.y = this.player.body.position.y - 255;
@@ -208,10 +219,9 @@ function update() {
     challengeText.x = this.player.body.position.x + this.player.body.width / 2 - challengeText.displayWidth / 2;
     challengeText.y = this.player.body.position.y + 100;
 
-    if(score >= totalNumTreasures || gameTimer <= 0) {
-        this.scene.restart();
-    }
-
+    // if(score >= totalNumTreasures || this.gameTimer <= 0) {
+    //     this.scene.restart();
+    // }
 
     if(this.player.oldPosition && (this.player.body.position.x !== this.player.oldPosition.x || this.player.body.position.y !== this.player.oldPosition.y)) {
         this.socket.emit('playerMovement', {x: this.player.body.position.x, y: this.player.body.position.y});
@@ -224,24 +234,14 @@ function update() {
 }
 
 function collectTreasure(treasure) {
-    treasure.destroy();
-
     score++;
     scoreText.setText(score);
 
     challengeActive = false;
     challengeText.setText('');
-}
 
-function createChallenge() {
-    let challengeArr = [];
-    let challengeLen = Phaser.Math.Between(minChallengeLen, maxChallengeLen);
-
-    for(let i = 0; i < challengeLen; i++) {
-        challengeArr.push(Phaser.Math.Between(0, letters.length - 1));
-    }
-
-    return challengeArr;
+    this.socket.emit('treasureCollected', {x: treasure.x, y: treasure.y, challenge: treasure.challenge, _id: treasure._id});
+    treasure.destroy();
 }
 
 function startChallenge(player, treasure) {
@@ -267,7 +267,14 @@ function addPlayer(scene, playerInfo) {
 }
 
 function addOtherPlayer(scene, playerInfo) {
-    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'amogus');
     otherPlayer.playerId = playerInfo.playerId;
     scene.otherPlayers.add(otherPlayer);
+}
+
+function addTreasure(scene, treasureData) {
+    const newTreasure = scene.physics.add.sprite(treasureData.x, treasureData.y, 'treasure');
+    newTreasure._id = treasureData._id;
+    newTreasure.challenge = treasureData.challenge;
+    scene.treasures.add(newTreasure);
 }
