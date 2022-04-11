@@ -85,7 +85,9 @@ function create() {
     this.socket.on('playerMoved', (playerInfo) => {
         scene.otherPlayers.getChildren().forEach((otherPlayer) => {
             if(playerInfo.playerId === otherPlayer.playerId) {
+                console.log(playerInfo);
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+                console.log(otherPlayer);
             }
         });
     });
@@ -224,6 +226,7 @@ function update() {
     // }
 
     if(this.player.oldPosition && (this.player.body.position.x !== this.player.oldPosition.x || this.player.body.position.y !== this.player.oldPosition.y)) {
+        console.log(this.player.body.position.x, this.player.body.position.y);
         this.socket.emit('playerMovement', {x: this.player.body.position.x, y: this.player.body.position.y});
     }
 
@@ -267,7 +270,7 @@ function addPlayer(scene, playerInfo) {
 }
 
 function addOtherPlayer(scene, playerInfo) {
-    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'amogus');
+    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'amogus').setOrigin(0.25);
     otherPlayer.playerId = playerInfo.playerId;
     scene.otherPlayers.add(otherPlayer);
 }
