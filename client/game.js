@@ -198,7 +198,7 @@ function update() {
             challengeText.setText(challengeText.text + " " + letters[currentChallengeTreasure.challenge[currentKeyIndex]]);
 
             if(currentKeyIndex >= currentChallengeTreasure.challenge.length) {
-                collectTreasure(currentChallengeTreasure);
+                collectTreasure(this, currentChallengeTreasure);
             }
         }
     }
@@ -233,14 +233,14 @@ function update() {
     };
 }
 
-function collectTreasure(treasure) {
+function collectTreasure(scene, treasure) {
     score++;
     scoreText.setText(score);
 
     challengeActive = false;
     challengeText.setText('');
 
-    this.socket.emit('treasureCollected', {x: treasure.x, y: treasure.y, challenge: treasure.challenge, _id: treasure._id});
+    scene.socket.emit('treasureCollected', {x: treasure.x, y: treasure.y, challenge: treasure.challenge, _id: treasure._id});
     treasure.destroy();
 }
 

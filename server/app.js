@@ -89,8 +89,8 @@ const generateTreasures = (num, challMin, challMax) => {
     genTreasures.push({x: 0, y: 0, challenge: []});
     genTreasures[i].x = getRandomInt(treasureDims.width / 2, worldDims.width - treasureDims.width / 2);
     genTreasures[i].y = getRandomInt(treasureDims.height / 2, worldDims.height - treasureDims.height / 2);
-    genTreasures.challenge = createChallenge(challMin, challMax);
-    genTreasures.id = i;
+    genTreasures[i].challenge = createChallenge(challMin, challMax);
+    genTreasures[i].id = i;
   }
 
   return genTreasures;
