@@ -45,11 +45,12 @@ const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D'
 const timerSecondsInitial = 240;
 const worldDims = {width: 1000, height: 1000};
 const treasureDims = {width: 32, height: 32};
-const totalNumTreasures = 10;
+const totalNumTreasures = 2;
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
 
 let timerSeconds = 0;
+let interval;
 
 let players = {};
 let treasures = [];
@@ -58,12 +59,16 @@ const startTimer = () => {
   const timer = () => {
     timerSeconds--;
     io.emit('timerTicked', timerSeconds);
+
+    if(timerSeconds <= 0) {
+      clearInterval(interval);
+    }
   };
 
   timer();
 
   if(timerSeconds > 0) {
-    setInterval(timer, 1000);
+    interval = setInterval(timer, 1000);
   }
 };
 
@@ -109,6 +114,7 @@ io.on('connection', (socket) => {
   players[socket.id] = {
     x: 500,
     y: 500,
+    score: 0,
     playerId: socket.id,
   };
 
@@ -132,8 +138,31 @@ io.on('connection', (socket) => {
 
   socket.on('treasureCollected', (treasureData) => {
     treasures.splice(treasures.indexOf(treasureData), 1);
+    players[socket.id].score++;
 
     socket.broadcast.emit('treasureRemoved', treasureData);
+
+    if(treasures.length === 0) {
+      const playersScoreOrder = _.sortBy(Object.values(players), (player) => {
+        return player.score;
+      });
+
+      // for(let i = 0; i < playersScoreOrder.length; i++) {
+      //   for(let j = 0; j < playersScoreOrder - i - 1; j++) {
+      //     if(playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
+      //       let temp = playersScoreOrder[j];
+      //       playersScoreOrder[j] = playersScoreOrder[j + 1];
+      //       playersScoreOrder[j + 1] = temp;
+      //     }
+      //   }
+      // }
+
+
+      clearInterval(interval);
+
+      socket.emit('playerWon', playersScoreOrder);
+      socket.broadcast.emit('playerWon', playersScoreOrder);
+    }
   });
 });
 

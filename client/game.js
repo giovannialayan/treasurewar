@@ -85,9 +85,7 @@ function create() {
     this.socket.on('playerMoved', (playerInfo) => {
         scene.otherPlayers.getChildren().forEach((otherPlayer) => {
             if(playerInfo.playerId === otherPlayer.playerId) {
-                console.log(playerInfo);
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
-                console.log(otherPlayer);
             }
         });
     });
@@ -116,6 +114,24 @@ function create() {
         treasureToDestroy.destroy();
     });
 
+    this.playerWinText = this.add.text(0, 0, '', {fontSize: '32px', fill: '#000', align: 'center'});
+    this.playerWinText.setOrigin(.5, 0);
+    this.playerWinText.setDepth(1);
+    this.gameOver = false;
+
+    this.socket.on('playerWon', (players) => {
+        console.log(players);
+        let scoreboard = '';
+        players.forEach((player) => {
+            scoreboard += `${player.playerId}: ${player.score}\n`;
+        });
+        scene.playerWinText.setText(scoreboard);
+        scene.playerWinText.x = this.player.body.position.x;
+        scene.playerWinText.y = this.player.body.position.y - 200;
+
+        scene.gameOver = true;
+    });
+
     this.add.image(500, 500, 'background');
 
     this.cameras.main.setBackgroundColor('#863b00');
@@ -125,11 +141,14 @@ function create() {
     score = 0;
 
     scoreText = this.add.text(16, 16, score, {fontSize: '32px', fill: '#000'});
+    scoreText.setDepth(1);
 
-    gameTimerText = scene.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000'});
+    gameTimerText = this.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000'});
+    gameTimerText.setDepth(1);
 
-    challengeText = scene.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center'});
-    
+    challengeText = this.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center'});
+    challengeText.setDepth(1);
+
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     challengeActive = false;
@@ -164,7 +183,7 @@ function create() {
 }
 
 function update() {
-    if(!this.player) {
+    if(!this.player || this.gameOver) {
         return;
     }
 
@@ -226,7 +245,6 @@ function update() {
     // }
 
     if(this.player.oldPosition && (this.player.body.position.x !== this.player.oldPosition.x || this.player.body.position.y !== this.player.oldPosition.y)) {
-        console.log(this.player.body.position.x, this.player.body.position.y);
         this.socket.emit('playerMovement', {x: this.player.body.position.x, y: this.player.body.position.y});
     }
 
@@ -272,6 +290,7 @@ function addPlayer(scene, playerInfo) {
 function addOtherPlayer(scene, playerInfo) {
     const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'amogus').setOrigin(0.25);
     otherPlayer.playerId = playerInfo.playerId;
+    otherPlayer.setPosition(playerInfo.x, playerInfo.y);
     scene.otherPlayers.add(otherPlayer);
 }
 
