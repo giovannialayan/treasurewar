@@ -48,12 +48,14 @@ const treasureDims = {width: 32, height: 32};
 const totalNumTreasures = 2;
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
+const maxPlayers = 10;
 
 let timerSeconds = 0;
 let interval;
 
 let players = {};
 let treasures = [];
+let rooms = [];
 
 const startTimer = () => {
   const timer = () => {
@@ -61,7 +63,7 @@ const startTimer = () => {
     io.emit('timerTicked', timerSeconds);
 
     if(timerSeconds <= 0) {
-      clearInterval(interval);
+      endGame();
     }
   };
 
@@ -101,14 +103,46 @@ const generateTreasures = (num, challMin, challMax) => {
   return genTreasures;
 }
 
-io.on('connection', (socket) => {
-  console.log(`player ${socket.id} connected`);
+const endGame = () => {
+  const playersScoreOrder = _.sortBy(Object.values(players), (player) => {
+    return player.score;
+  });
 
+  // for(let i = 0; i < playersScoreOrder.length; i++) {
+  //   for(let j = 0; j < playersScoreOrder - i - 1; j++) {
+  //     if(playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
+  //       let temp = playersScoreOrder[j];
+  //       playersScoreOrder[j] = playersScoreOrder[j + 1];
+  //       playersScoreOrder[j + 1] = temp;
+  //     }
+  //   }
+  // }
+
+  clearInterval(interval);
+
+  io.emit('playerWon', playersScoreOrder);
+};
+
+//remember to make it so you cant connect after the game has started after you make it so there are rooms and room options
+io.on('connection', (socket) => {
   if(_.isEmpty(players)) {
     timerSeconds = timerSecondsInitial;
     startTimer();
 
     treasures = generateTreasures(totalNumTreasures, minChallengeLen, maxChallengeLen);
+    rooms.push(0);
+  }
+
+  let playerRoom = 0;
+  for(let i = 0; i < rooms.length; i++) {
+    if(rooms[i] < maxPlayers) {
+      rooms[i]++;
+      playerRoom = i;
+      break;
+    }
+    else if(i === rooms.length - 1) {
+      rooms.push(0);
+    }
   }
 
   players[socket.id] = {
@@ -116,7 +150,10 @@ io.on('connection', (socket) => {
     y: 500,
     score: 0,
     playerId: socket.id,
+    room: playerRoom,
   };
+
+  console.log(`player ${socket.id} connected to room ${players[socket.id].room}`);
 
   socket.emit('placeTreasures', treasures);
 
@@ -126,6 +163,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
       console.log(`player ${socket.id} disconnected`);
       delete players[socket.id];
+      numPlayers--;
       io.emit('playerDisconnected', socket.id);
   });
 
@@ -143,25 +181,7 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('treasureRemoved', treasureData);
 
     if(treasures.length === 0) {
-      const playersScoreOrder = _.sortBy(Object.values(players), (player) => {
-        return player.score;
-      });
-
-      // for(let i = 0; i < playersScoreOrder.length; i++) {
-      //   for(let j = 0; j < playersScoreOrder - i - 1; j++) {
-      //     if(playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
-      //       let temp = playersScoreOrder[j];
-      //       playersScoreOrder[j] = playersScoreOrder[j + 1];
-      //       playersScoreOrder[j + 1] = temp;
-      //     }
-      //   }
-      // }
-
-
-      clearInterval(interval);
-
-      socket.emit('playerWon', playersScoreOrder);
-      socket.broadcast.emit('playerWon', playersScoreOrder);
+      endGame();
     }
   });
 });
