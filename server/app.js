@@ -54,7 +54,6 @@ let timerSeconds = 0;
 let interval;
 
 let players = {};
-let treasures = [];
 let rooms = [];
 
 const startTimer = () => {
@@ -103,7 +102,7 @@ const generateTreasures = (num, challMin, challMax) => {
   return genTreasures;
 }
 
-const endGame = () => {
+const endGame = (room, players) => {
   const playersScoreOrder = _.sortBy(Object.values(players), (player) => {
     return player.score;
   });
@@ -120,28 +119,24 @@ const endGame = () => {
 
   clearInterval(interval);
 
-  io.emit('playerWon', playersScoreOrder);
+  io.to(room).emit('playerWon', playersScoreOrder);
 };
 
 //remember to make it so you cant connect after the game has started after you make it so there are rooms and room options
 io.on('connection', (socket) => {
   if(_.isEmpty(players)) {
-    timerSeconds = timerSecondsInitial;
     startTimer();
-
-    treasures = generateTreasures(totalNumTreasures, minChallengeLen, maxChallengeLen);
-    rooms.push(0);
   }
 
   let playerRoom = 0;
   for(let i = 0; i < rooms.length; i++) {
-    if(rooms[i] < maxPlayers) {
-      rooms[i]++;
+    if(rooms[i].numPlayers < maxPlayers) {
+      rooms[i].numPlayers++;
       playerRoom = i;
       break;
     }
     else if(i === rooms.length - 1) {
-      rooms.push(0);
+      rooms.push({numPlayers: 0});
     }
   }
 
@@ -153,9 +148,17 @@ io.on('connection', (socket) => {
     room: playerRoom,
   };
 
+  socket.join(players[socket.id].room);
+
+  if(rooms[players[socket.id].room]) {
+    rooms[players[socket.id].room].timerSeconds = timerSecondsInitial;
+    
+    rooms[players[socket.id].room].treasures = generateTreasures(totalNumTreasures, minChallengeLen, maxChallengeLen);
+  }
+
   console.log(`player ${socket.id} connected to room ${players[socket.id].room}`);
 
-  socket.emit('placeTreasures', treasures);
+  socket.emit('placeTreasures', rooms[players[socket.id].room].treasures);
 
   socket.emit('currentPlayers', players);
   socket.broadcast.emit('newPlayer', players[socket.id]);
@@ -175,7 +178,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('treasureCollected', (treasureData) => {
-    treasures.splice(treasures.indexOf(treasureData), 1);
+    rooms[players[socket.id].room].treasures.splice(rooms[players[socket.id].room].treasures.indexOf(treasureData), 1);
     players[socket.id].score++;
 
     socket.broadcast.emit('treasureRemoved', treasureData);
