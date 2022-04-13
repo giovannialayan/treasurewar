@@ -45,38 +45,36 @@ const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D'
 const timerSecondsInitial = 240;
 const worldDims = {width: 1000, height: 1000};
 const treasureDims = {width: 32, height: 32};
-const totalNumTreasures = 2;
+const totalNumTreasures = 10;
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
 const maxPlayers = 10;
 
-let timerSeconds = 0;
-let interval;
-
 let players = {};
 let rooms = [];
 
-const startTimer = () => {
-  const timer = () => {
-    timerSeconds--;
-    io.emit('timerTicked', timerSeconds);
+//start a timer than counts down a room's timer every second
+const startTimer = (room) => {
+  const timer = (room) => {
+    rooms[room].timerSeconds--;
+    io.to(room).emit('timerTicked', room[room].timerSeconds);
 
-    if(timerSeconds <= 0) {
-      endGame();
+    if(rooms[room].timerSeconds <= 0) {
+      clearInterval(rooms[room].interval);
+      endGame(room);
     }
   };
 
-  timer();
-
-  if(timerSeconds > 0) {
-    interval = setInterval(timer, 1000);
-  }
+  timer(room);
+  rooms[room].interval = setInterval(() => {timer(room)}, 1000);
 };
 
+//get a random int
 const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min);
 };
 
+//create a keyboard challenge for a treasure
 const createChallenge = (minLen, maxLen) => {
   let challengeArr = [];
   let challengeLen = getRandomInt(minLen, maxLen + 1);
@@ -88,6 +86,7 @@ const createChallenge = (minLen, maxLen) => {
   return challengeArr;
 }
 
+//generate position, challenge, and id for a given number of treasures
 const generateTreasures = (num, challMin, challMax) => {
   let genTreasures = [];
 
@@ -102,32 +101,20 @@ const generateTreasures = (num, challMin, challMax) => {
   return genTreasures;
 }
 
-const endGame = (room, players) => {
-  const playersScoreOrder = _.sortBy(Object.values(players), (player) => {
+//end the game for a room and emit the players in the room in order of their score
+const endGame = (room) => {
+  const playersScoreOrder = _.sortBy(Object.values(rooms[room].roomPlayers), (player) => {
     return player.score;
   });
-
-  // for(let i = 0; i < playersScoreOrder.length; i++) {
-  //   for(let j = 0; j < playersScoreOrder - i - 1; j++) {
-  //     if(playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
-  //       let temp = playersScoreOrder[j];
-  //       playersScoreOrder[j] = playersScoreOrder[j + 1];
-  //       playersScoreOrder[j + 1] = temp;
-  //     }
-  //   }
-  // }
-
-  clearInterval(interval);
 
   io.to(room).emit('playerWon', playersScoreOrder);
 };
 
-//remember to make it so you cant connect after the game has started after you make it so there are rooms and room options
-io.on('connection', (socket) => {
-  if(_.isEmpty(players)) {
-    startTimer();
-  }
+//todo: make it so you cant connect after the game has started after you make it so you can create rooms and the game starts only after a certain number of players have joined
 
+//on connect event, sets up everything for the player than connected
+io.on('connection', (socket) => {
+  //find a room that isnt full or make a new room if they are all full
   let playerRoom = 0;
   for(let i = 0; i < rooms.length; i++) {
     if(rooms[i].numPlayers < maxPlayers) {
@@ -140,6 +127,7 @@ io.on('connection', (socket) => {
     }
   }
 
+  //create object for this player
   players[socket.id] = {
     x: 500,
     y: 500,
@@ -148,40 +136,57 @@ io.on('connection', (socket) => {
     room: playerRoom,
   };
 
+  //join the room this player should be in
   socket.join(players[socket.id].room);
 
-  if(rooms[players[socket.id].room]) {
+  //if this player is the first one in the room set up the game
+  if(rooms[players[socket.id].room].numPlayers === 1) {
     rooms[players[socket.id].room].timerSeconds = timerSecondsInitial;
-    
+    rooms[players[socket.id].room].interval = startTimer(players[socket.id].room);
+    rooms[players[socket.id].room].roomPlayers = players[socket.id];
     rooms[players[socket.id].room].treasures = generateTreasures(totalNumTreasures, minChallengeLen, maxChallengeLen);
   }
 
   console.log(`player ${socket.id} connected to room ${players[socket.id].room}`);
 
-  socket.emit('placeTreasures', rooms[players[socket.id].room].treasures);
+  //send current treasure data to the player that just joined
+  socket.to(players[socket.id].room).emit('placeTreasures', rooms[players[socket.id].room].treasures);
 
-  socket.emit('currentPlayers', players);
-  socket.broadcast.emit('newPlayer', players[socket.id]);
+  //send all current players to the player than just joined
+  socket.to(players[socket.id].room).emit('currentPlayers', players);
 
+  //send this player's data to all other players
+  socket.broadcast.to(players[socket.id].room).emit('newPlayer', players[socket.id]);
+
+  //when this player disconnects remove them from the room, delete their data and send to all other players the id to delete
   socket.on('disconnect', () => {
       console.log(`player ${socket.id} disconnected`);
+      delete rooms[players[socket.id].room].players[socket.id];
+      rooms[players[socket.id].room].numPlayers--;
+
+      if(rooms[players[socket.id].room].numPlayers <= 0) {
+        rooms.pop();
+      }
+
       delete players[socket.id];
-      numPlayers--;
-      io.emit('playerDisconnected', socket.id);
+
+      io.to(roomNum).emit('playerDisconnected', socket.id);
   });
 
+  //when this player moves send the movement data to all other players
   socket.on('playerMovement', (movementData) => {
     players[socket.id].x = movementData.x;
     players[socket.id].y = movementData.y;
     
-    socket.broadcast.emit('playerMoved', players[socket.id]);
+    socket.broadcast.to(players[socket.id].room).emit('playerMoved', players[socket.id]);
   });
 
+  //when this player collects a treasure, remove it from the room's treasures, send to all other players the treasure to delete
   socket.on('treasureCollected', (treasureData) => {
     rooms[players[socket.id].room].treasures.splice(rooms[players[socket.id].room].treasures.indexOf(treasureData), 1);
     players[socket.id].score++;
 
-    socket.broadcast.emit('treasureRemoved', treasureData);
+    socket.broadcast.to(players[socket.id].room).emit('treasureRemoved', treasureData);
 
     if(treasures.length === 0) {
       endGame();
