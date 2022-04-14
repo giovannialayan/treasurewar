@@ -115,7 +115,6 @@ function create() {
     });
 
     this.playerWinText = this.add.text(0, 0, '', {fontSize: '32px', fill: '#000', align: 'center'});
-    this.playerWinText.setOrigin(.5, 0);
     this.playerWinText.setDepth(1);
     this.gameOver = false;
 
@@ -126,7 +125,7 @@ function create() {
             scoreboard += `${player.playerId}: ${player.score}\n`;
         });
         scene.playerWinText.setText(scoreboard);
-        scene.playerWinText.x = this.player.body.position.x;
+        scene.playerWinText.x = this.player.body.position.x - scene.playerWinText.width / 2;
         scene.playerWinText.y = this.player.body.position.y - 200;
 
         scene.gameOver = true;

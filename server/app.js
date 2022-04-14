@@ -53,20 +53,14 @@ const maxPlayers = 10;
 let players = {};
 let rooms = [];
 
-//start a timer than counts down a room's timer every second
-const startTimer = (room) => {
-  const timer = (room) => {
-    rooms[room].timerSeconds--;
-    io.to(room).emit('timerTicked', room[room].timerSeconds);
-
-    if(rooms[room].timerSeconds <= 0) {
-      clearInterval(rooms[room].interval);
-      endGame(room);
-    }
-  };
-
-  timer(room);
-  rooms[room].interval = setInterval(() => {timer(room)}, 1000);
+//counts down a room's timer every second
+const timer = (room) => {
+  rooms[room].timerSeconds--;
+  io.to(room).emit('timerTicked', rooms[room].timerSeconds);
+  if(rooms[room].timerSeconds <= 0) {
+    clearInterval(rooms[room].interval);
+    endGame(room);
+  }
 };
 
 //get a random int
@@ -107,6 +101,18 @@ const endGame = (room) => {
     return player.score;
   });
 
+  for(let i = 0; i < playersScoreOrder.length; i++) {
+    for(let j = 0; j < playersScoreOrder - i - 1; j++) {
+      if(playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
+        let temp = playersScoreOrder[j];
+        playersScoreOrder[j] = playersScoreOrder[j + 1];
+        playersScoreOrder[j + 1] = temp;
+      }
+    }
+  }
+
+  clearInterval(rooms[room].interval);
+
   io.to(room).emit('playerWon', playersScoreOrder);
 };
 
@@ -115,7 +121,14 @@ const endGame = (room) => {
 //on connect event, sets up everything for the player than connected
 io.on('connection', (socket) => {
   //find a room that isnt full or make a new room if they are all full
+  let roomJustMade = false;
+  if(rooms.length === 0) {
+    rooms.push({numPlayers: 0});
+    roomJustMade = true;
+  }
+
   let playerRoom = 0;
+  
   for(let i = 0; i < rooms.length; i++) {
     if(rooms[i].numPlayers < maxPlayers) {
       rooms[i].numPlayers++;
@@ -124,6 +137,7 @@ io.on('connection', (socket) => {
     }
     else if(i === rooms.length - 1) {
       rooms.push({numPlayers: 0});
+      roomJustMade = true;
     }
   }
 
@@ -140,20 +154,22 @@ io.on('connection', (socket) => {
   socket.join(players[socket.id].room);
 
   //if this player is the first one in the room set up the game
-  if(rooms[players[socket.id].room].numPlayers === 1) {
+  if(roomJustMade) {
     rooms[players[socket.id].room].timerSeconds = timerSecondsInitial;
-    rooms[players[socket.id].room].interval = startTimer(players[socket.id].room);
-    rooms[players[socket.id].room].roomPlayers = players[socket.id];
+    rooms[players[socket.id].room].interval = setInterval(() => {timer(players[socket.id].room)}, 1000);
+    rooms[players[socket.id].room].roomPlayers = {};
+    rooms[players[socket.id].room].roomPlayers[socket.id] = players[socket.id];
     rooms[players[socket.id].room].treasures = generateTreasures(totalNumTreasures, minChallengeLen, maxChallengeLen);
   }
 
   console.log(`player ${socket.id} connected to room ${players[socket.id].room}`);
 
   //send current treasure data to the player that just joined
-  socket.to(players[socket.id].room).emit('placeTreasures', rooms[players[socket.id].room].treasures);
+  socket.emit('placeTreasures', rooms[players[socket.id].room].treasures);
 
   //send all current players to the player than just joined
-  socket.to(players[socket.id].room).emit('currentPlayers', players);
+  //socket.to(players[socket.id].room).emit('currentPlayers', players);
+  socket.emit('currentPlayers', players);
 
   //send this player's data to all other players
   socket.broadcast.to(players[socket.id].room).emit('newPlayer', players[socket.id]);
@@ -161,12 +177,15 @@ io.on('connection', (socket) => {
   //when this player disconnects remove them from the room, delete their data and send to all other players the id to delete
   socket.on('disconnect', () => {
       console.log(`player ${socket.id} disconnected`);
-      delete rooms[players[socket.id].room].players[socket.id];
+      delete rooms[players[socket.id].room].roomPlayers[socket.id];
       rooms[players[socket.id].room].numPlayers--;
 
       if(rooms[players[socket.id].room].numPlayers <= 0) {
-        rooms.pop();
+        clearInterval(rooms[players[socket.id].room].interval);
+        rooms.splice(players[socket.id].room, 1);
       }
+
+      let roomNum = players[socket.id].room;
 
       delete players[socket.id];
 
@@ -183,13 +202,13 @@ io.on('connection', (socket) => {
 
   //when this player collects a treasure, remove it from the room's treasures, send to all other players the treasure to delete
   socket.on('treasureCollected', (treasureData) => {
-    rooms[players[socket.id].room].treasures.splice(rooms[players[socket.id].room].treasures.indexOf(treasureData), 1);
+    rooms[players[socket.id].room].treasures.splice(rooms[players[socket.id].room].treasures.findIndex(treasure => treasure._id === treasureData._id), 1);
     players[socket.id].score++;
 
     socket.broadcast.to(players[socket.id].room).emit('treasureRemoved', treasureData);
 
-    if(treasures.length === 0) {
-      endGame();
+    if(rooms[players[socket.id].room].treasures.length === 0) {
+      endGame(players[socket.id].room);
     }
   });
 });
