@@ -1,3 +1,5 @@
+const gameManager = require('../gameManager.js');
+
 const gamePage = (req, res) => res.render('game');
 
 const makeRoom = (req, res) => {
@@ -6,8 +8,7 @@ const makeRoom = (req, res) => {
     return res.status(400).json({ error: 'name, maxplayers, minplayers, time, and hardon are required' });
   }
 
-  const app = require('../app.js');
-  const roomId = app.createRoom(
+  const roomId = gameManager.createRoom(
     req.body.name,
     req.body.maxPlayers,
     req.body.minPlayers,
@@ -20,8 +21,7 @@ const makeRoom = (req, res) => {
 };
 
 const getRooms = (req, res) => {
-  const app = require('../app.js');
-  res.json({roomObject: app.getRoomObj()});
+  res.json({ roomObject: gameManager.getRoomObj() });
 };
 
 module.exports = {
