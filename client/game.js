@@ -26,10 +26,7 @@ let config = {
 };
 
 const playerSpeed = 300;
-const minChallengeLen = 5;
-const maxChallengeLen = 8;
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
-const totalNumTreasures = 10;
 
 let cursors;
 let spacebar;
@@ -42,7 +39,6 @@ let currentChallengeTreasure;
 let currentKeyIndex;
 let challengeText;
 let dt = 1/60;
-//let game = new Phaser.Game(config);
 let game;
 let roomId;
 let hardMode = false;
@@ -141,6 +137,12 @@ function create() {
         scene.gameOver = true;
     });
 
+    this.gameStarted = false;
+
+    this.socket.on('startGame', (start) => {
+        this.gameStarted = start;
+    });
+
     this.add.image(500, 500, 'background');
 
     this.cameras.main.setBackgroundColor('#863b00');
@@ -149,7 +151,7 @@ function create() {
 
     score = 0;
 
-    scoreText = this.add.text(16, 16, score, {fontSize: '32px', fill: '#000'});
+    scoreText = this.add.text(150, 245, score, {fontSize: '32px', fill: '#000'});
     scoreText.setDepth(1);
 
     gameTimerText = this.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000'});
@@ -192,7 +194,7 @@ function create() {
 }
 
 function update() {
-    if(!this.player || this.gameOver) {
+    if(!this.player || this.gameOver || !this.gameStarted) {
         return;
     }
 

@@ -28,7 +28,6 @@ const endGame = (room, callback) => {
 
   clearInterval(rooms[room].interval);
 
-  // io.to(room).emit('playerWon', playersScoreOrder);
   callback(playersScoreOrder, room, 'playerWon');
 };
 
@@ -58,17 +57,12 @@ const createPlayer = (id, room) => {
 
 const getRoom = (id) => rooms[id];
 
-const changeNumPlayerOfRoom = (id, num) => {
-  rooms[id].numPlayers = num;
+const getRoomByPlayer = id => {
+  return rooms[players[id].room];
 };
 
-const tryFirstTimeRoomSetup = (id, player, callback) => {
-  if (rooms[id].roomJustMade) {
-    rooms[id].interval = setInterval(() => {
-      timer(id, callback);
-    }, 1000);
-    rooms[id].roomJustMade = false;
-  }
+const changeNumPlayerOfRoom = (id, num) => {
+  rooms[id].numPlayers = num;
 };
 
 const disconnectPlayer = (id, callback) => {
@@ -178,6 +172,17 @@ const getRoomObj = () => {
   return roomObj;
 };
 
+//start the game if the number of players is at least at the minimum number of players
+const tryStartGame = (roomId, callback) => {
+  if(rooms[roomId].numPlayers >= rooms[roomId].minPlayers) {
+    rooms[roomId].interval = setInterval(() => {
+      timer(roomId, callback);
+    }, 1000);
+
+    callback(true, roomId, 'startGame');
+  }
+};
+
 module.exports = {
   getPlayer,
   getRoomObj,
@@ -186,8 +191,9 @@ module.exports = {
   collectTreasure,
   changePlayerPosition,
   disconnectPlayer,
-  tryFirstTimeRoomSetup,
   changeNumPlayerOfRoom,
   getRoom,
   createPlayer,
+  getRoomByPlayer,
+  tryStartGame,
 };

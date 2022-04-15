@@ -75,16 +75,25 @@ const RoomList = (props) => {
 
     return (
         <div className="roomList">
+            <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
             {roomNodes}
         </div>
     );
 };
 
-const start = (roomId, hard) => {
-    document.getElementById('gameSetup').classList.add('hidden');
-    document.getElementById('roomList').classList.add('hidden');
-
-    game.startGame(roomId, hard);
+const start = async (roomId, hard) => {
+    const response  = await fetch('/getRooms');
+    const data = await response.json();
+    
+    if(data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers) {
+        document.getElementById('gameSetup').classList.add('hidden');
+        document.getElementById('roomList').classList.add('hidden');
+    
+        game.startGame(roomId, hard);
+    }
+    else {
+        getRoomList();
+    }
 };
 
 const getRoomList = async () => {

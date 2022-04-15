@@ -55,23 +55,19 @@ io.on('connection', (socket) => {
   socket.join(gameManager.getPlayer(socket.id).room);
   gameManager.changeNumPlayerOfRoom(
     gameManager.getPlayer(socket.id).room,
-    gameManager.getRoom(gameManager.getPlayer(socket.id).room).numPlayers + 1,
+    gameManager.getRoomByPlayer(socket.id).numPlayers + 1,
   );
 
-  // if this player is the first one in the room set up the game
-  gameManager.tryFirstTimeRoomSetup(
-    gameManager.getPlayer(socket.id).room,
-    gameManager.getPlayer(socket.id),
-    emitToRoom,
-  );
+  //if the conditions for starting the game have been met, start the game
+  gameManager.tryStartGame(gameManager.getPlayer(socket.id).room, emitToRoom);
 
   console.log(`player ${socket.id} connected to room ${gameManager.getPlayer(socket.id).room}`);
 
   // send current treasure data to the player that just joined
-  socket.emit('placeTreasures', gameManager.getRoom(gameManager.getPlayer(socket.id).room).treasures);
+  socket.emit('placeTreasures', gameManager.getRoomByPlayer(socket.id).treasures);
 
   // send all current players to the player than just joined
-  socket.emit('currentPlayers', gameManager.getRoom(gameManager.getPlayer(socket.id).room).roomPlayers);
+  socket.emit('currentPlayers', gameManager.getRoomByPlayer(socket.id).roomPlayers);
 
   // send this player's data to all other players
   socket.broadcast.to(gameManager.getPlayer(socket.id).room).emit('newPlayer', gameManager.getPlayer(socket.id));
@@ -97,7 +93,7 @@ io.on('connection', (socket) => {
 
     socket.broadcast.to(gameManager.getPlayer(socket.id).room).emit('treasureRemoved', treasureData);
 
-    if (gameManager.getRoom(gameManager.getPlayer(socket.id).room).treasures.length === 0) {
+    if (gameManager.getRoomByPlayer(socket.id).treasures.length === 0) {
       gameManager.endGame(gameManager.getPlayer(socket.id).room, emitToRoom);
     }
   });
