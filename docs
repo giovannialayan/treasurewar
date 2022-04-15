@@ -1,8 +1,69 @@
-https://phaser.io/tutorials/making-your-first-phaser-3-game/part1
 https://newdocs.phaser.io/docs/3.55.2/
 https://photonstorm.github.io/phaser3-docs/
+https://socket.io/docs/v4/
+https://developer.mozilla.org/en-US/docs/Web
+
+What is the intended purpose of your application?
+it is a game that can be played with multiple people at once where players have to collect treasure from around the map by completing keyboard challenges.
+
+What work has been completed for this milestone?
+the game is done and socket.io has been implemented for realtime multiplayer in the game.
+
+What work is left, and how do you plan to complete it?
+i have to add accounts and an account page, room creation and joining, a shop page for buying skins, and a leaderboard page that displays players with the most first place finishes
+
+How are you using React?
+i have made a room creation form component that lets you create a room and a room list component that displays the rooms.
+i will make a component for the leaderboard to display the list of players and the number of their first place finishes, for the shop to display and be able to buy skins, and for the account page to display and select what skin to use.
+
+What data are you storing in MongoDB?
+i will store player accounts and the leaderboard data.
+
+What is your profit model?
+it will be buying skins and ads on the sides.
+
+Do you have a plan for going above and beyond? If so, what is it?
+using websockets for realtime multiplayer.
+
+If you used any borrowed code or code fragments, where did you get them from?
+What do the code fragments do? Where are they in your code?
+
+https://phaser.io/tutorials/making-your-first-phaser-3-game/part1
+- i learned phaser from this
+- game.js: config, game, preload, create, upload
+
 https://janisjenny.medium.com/how-to-set-world-bounds-with-phaser-99bde692970e
+- sets the world bounds of the game so i can match it to the background image dimensions
+- game.js: line 142
+
 https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-1/
+- i used this to learn how to set up socket.io and send information to the client and recieve information from the server
+- app.js: all of the socket.io set up and connection, disconnect, currentPlayers, and newPlayer events
+- game.js: socket.io set up and currentPlayers, newPlayer, playerDisconnected events
+
 https://github.com/ivangfr/socketio-express-phaser3
-https://medium.com/swlh/building-a-realtime-multiplayer-browser-game-in-less-than-a-day-part-1-4-4ff35dd44715
-https://socket.io/docs/v3/
+- i used this to learn how to transmit player movement to the server then to other clients
+- app.js: playerMovement event
+- game.js: playerMoved event, addPlayer function, addOtherPlayer function, update for player movement and emitting playerMovement
+
+Endpoints
+URL: /makeRoom
+Supported Methods: POST
+Middleware: will use requires secure, requires login
+Query Params: roomName (name of the room to display), maxPlayers (max number of players that can be in the room at once), minPlayers (min number of players required to start the game), time (max minutes the game can go on for if all treasures haven't been collected), hardOn (if hard mode is turned on)
+Description: creates a new room with input settings that is added to the rooms list that can be joined
+Return Type: JSON
+
+URL: /joinRoom
+Supported Methods: POST
+Middleware: will use requires secure, requires login
+Query Params: roomId (id of the room to join)
+Description: joins the client to room with the input id
+Return Type: JSON
+
+URL: /getRooms
+Supported Methods: GET
+Middleware: will use requires secure, requires login
+Query Params: none
+Description: gets the list of rooms
+Return Type: JSON

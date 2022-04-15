@@ -43,6 +43,10 @@ let challengeText;
 let dt = 1/60;
 let game = new Phaser.Game(config);
 
+// const startGame = () => {
+//     let game = new Phaser.Game(config);
+// };
+
 function preload() {
     this.load.setBaseURL('');
 
@@ -299,3 +303,5 @@ function addTreasure(scene, treasureData) {
     newTreasure.challenge = treasureData.challenge;
     scene.treasures.add(newTreasure);
 }
+
+// export {startGame};
