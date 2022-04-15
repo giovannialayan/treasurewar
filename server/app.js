@@ -42,16 +42,13 @@ server.listen(port, () => {
 });
 
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
-const timerSecondsInitial = 240;
 const worldDims = { width: 1000, height: 1000 };
 const treasureDims = { width: 32, height: 32 };
-const totalNumTreasures = 10;
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
-const maxPlayers = 10;
 
 const players = {};
-const rooms = [];
+const rooms = {};
 let roomIds = 0;
 
 // end the game for a room and emit the players in the room in order of their score
@@ -123,51 +120,28 @@ const generateTreasures = (num, challMin, challMax) => {
 
 // on connect event, sets up everything for the player than connected
 io.on('connection', (socket) => {
-  // find a room that isnt full or make a new room if they are all full
-  let roomJustMade = false;
-  if (rooms.length === 0) {
-    rooms.push({ numPlayers: 0 });
-    roomJustMade = true;
-  }
-
-  let playerRoom = 0;
-
-  for (let i = 0; i < rooms.length; i++) {
-    if (rooms[i].numPlayers < maxPlayers) {
-      rooms[i].numPlayers++;
-      playerRoom = i;
-      break;
-    } else if (i === rooms.length - 1) {
-      rooms.push({ numPlayers: 0 });
-      roomJustMade = true;
-    }
-  }
-
   // create object for this player
   players[socket.id] = {
     x: 500,
     y: 500,
     score: 0,
     playerId: socket.id,
-    room: playerRoom,
+    room: socket.handshake.query.room,
   };
 
   // join the room this player should be in
   socket.join(players[socket.id].room);
+  rooms[players[socket.id].room].numPlayers++;
 
   // if this player is the first one in the room set up the game
-  if (roomJustMade) {
-    rooms[players[socket.id].room].timerSeconds = timerSecondsInitial;
+  if (rooms[players[socket.id].room].roomJustMade) {
+    const roomToTime = players[socket.id].room;
     rooms[players[socket.id].room].interval = setInterval(() => {
-      timer(players[socket.id].room);
+      timer(roomToTime);
     }, 1000);
     rooms[players[socket.id].room].roomPlayers = {};
     rooms[players[socket.id].room].roomPlayers[socket.id] = players[socket.id];
-    rooms[players[socket.id].room].treasures = generateTreasures(
-      totalNumTreasures,
-      minChallengeLen,
-      maxChallengeLen,
-    );
+    rooms[players[socket.id].room].roomJustMade = false;
   }
 
   console.log(`player ${socket.id} connected to room ${players[socket.id].room}`);
@@ -191,7 +165,7 @@ io.on('connection', (socket) => {
 
     if (rooms[players[socket.id].room].numPlayers <= 0) {
       clearInterval(rooms[players[socket.id].room].interval);
-      rooms.splice(players[socket.id].room, 1);
+      delete rooms[players[socket.id].room];
     }
 
     const roomNum = players[socket.id].room;
@@ -226,28 +200,44 @@ io.on('connection', (socket) => {
   });
 });
 
-const createRoom = (name, maxRoomPlayers, minPlayers, time, hardOn) => {
+const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn) => {
   roomIds++;
-  rooms.push({
+  rooms[roomIds] = {
     name,
     maxPlayers: maxRoomPlayers,
     minPlayers,
     timerSeconds: time * 60,
+    startTime: time,
+    numTreasures,
     hard: hardOn,
     _id: roomIds,
-  });
+    roomJustMade: true,
+    numPlayers: 0,
+  };
+
+  rooms[roomIds].treasures = generateTreasures(rooms[roomIds].numTreasures, minChallengeLen, maxChallengeLen);
 };
 
-const getRooms = () => rooms;
+const getRoomObj = () => {
+  let roomList = Object.keys(rooms);
+  let roomObj = {};
+
+  for(let i = 0; i < roomList.length; i++) {
+    roomObj[roomList[i]] = {
+      name: rooms[roomList[i]].name, 
+      maxPlayers: rooms[roomList[i]].maxPlayers, 
+      minPlayers: rooms[roomList[i]].minPlayers, 
+      time: rooms[roomList[i]].startTime,
+      numTreasures: rooms[roomList[i]].numTreasures,
+      _id: rooms[roomList[i]]._id,
+      currentPlayers: rooms[roomList[i]].numPlayers,
+    };
+  }
+
+  return roomObj;
+};
 
 module.exports = {
   createRoom,
-  getRooms,
+  getRoomObj,
 };
-
-// app.listen(port, (err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log(`listening on port ${port}`);
-// });

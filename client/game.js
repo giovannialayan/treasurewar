@@ -8,6 +8,7 @@ const worldHeight = 1000;
 
 let config = {
     type: Phaser.AUTO,
+    parent: 'gameContainer',
     width: gameWidth,
     height: gameHeight,
     physics: {
@@ -41,11 +42,16 @@ let currentChallengeTreasure;
 let currentKeyIndex;
 let challengeText;
 let dt = 1/60;
-let game = new Phaser.Game(config);
+//let game = new Phaser.Game(config);
+let game;
+let roomId;
+let hardMode = false;
 
-// const startGame = () => {
-//     let game = new Phaser.Game(config);
-// };
+const startGame = (room, hard) => {
+    roomId = room
+    hardMode = hard;
+    game = new Phaser.Game(config);
+};
 
 function preload() {
     this.load.setBaseURL('');
@@ -58,7 +64,7 @@ function preload() {
 
 function create() {
     const scene = this;
-    this.socket = io();
+    this.socket = io(`/?room=${roomId}`);
     this.otherPlayers = this.physics.add.group();
 
     this.socket.on('currentPlayers', (players) => {
@@ -94,7 +100,7 @@ function create() {
         });
     });
 
-    this.gameTimer = 240;
+    this.gameTimer = 0;
 
     this.socket.on('timerTicked', (time) => {
         scene.gameTimer = time;
@@ -210,10 +216,16 @@ function update() {
         this.player.setVelocityY(0);
     }
 
-    if(Phaser.Input.Keyboard.JustDown(spacebar) && !challengeActive) {
-        this.treasures.children.iterate((treasure) => {
-            this.physics.world.overlap(this.player, treasure, startChallenge);
-        });
+    if(Phaser.Input.Keyboard.JustDown(spacebar)) {
+        if(challengeActive) {
+            challengeActive = false;
+            challengeText.setText('');
+        }
+        else {
+            this.treasures.children.iterate((treasure) => {
+                this.physics.world.overlap(this.player, treasure, startChallenge);
+            });
+        }
     }
 
     if(challengeActive) {
@@ -225,14 +237,18 @@ function update() {
                 collectTreasure(this, currentChallengeTreasure);
             }
         }
-    }
+        else if(hardMode) {
+            let otherLetterPressed = false;
+            for(let i = 0; i < letterKeys.length; i++) {
+                otherLetterPressed = otherLetterPressed ? otherLetterPressed : Phaser.Input.Keyboard.JustDown(letterKeys[i]);
+            }
 
-    // this.gameTimer -= dt;
-    // if(this.gameTimer < 0)
-    // {
-    //     this.gameTimer = 0;
-    // }
-    // gameTimerText.setText(secToMinSec(this.gameTimer));
+            if(otherLetterPressed) {
+                challengeActive = false;
+                challengeText.setText('');
+            }
+        }
+    }
 
     scoreText.x = this.player.body.position.x - 350;
     scoreText.y = this.player.body.position.y - 255;
@@ -242,10 +258,6 @@ function update() {
 
     challengeText.x = this.player.body.position.x + this.player.body.width / 2 - challengeText.displayWidth / 2;
     challengeText.y = this.player.body.position.y + 100;
-
-    // if(score >= totalNumTreasures || this.gameTimer <= 0) {
-    //     this.scene.restart();
-    // }
 
     if(this.player.oldPosition && (this.player.body.position.x !== this.player.oldPosition.x || this.player.body.position.y !== this.player.oldPosition.y)) {
         this.socket.emit('playerMovement', {x: this.player.body.position.x, y: this.player.body.position.y});
@@ -304,4 +316,4 @@ function addTreasure(scene, treasureData) {
     scene.treasures.add(newTreasure);
 }
 
-// export {startGame};
+export {startGame};
