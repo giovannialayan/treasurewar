@@ -52,6 +52,8 @@ const createPlayer = (id, room) => {
     playerId: id,
     room,
   };
+
+  rooms[room].roomPlayers[id] = players[id];
 };
 
 const getRoom = (id) => rooms[id];
@@ -65,8 +67,6 @@ const tryFirstTimeRoomSetup = (id, player, callback) => {
     rooms[id].interval = setInterval(() => {
       timer(id, callback);
     }, 1000);
-    rooms[id].roomPlayers = {};
-    rooms[id].roomPlayers[player.playerId] = player;
     rooms[id].roomJustMade = false;
   }
 };
@@ -149,6 +149,7 @@ const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn
     _id: roomIds,
     roomJustMade: true,
     numPlayers: 0,
+    roomPlayers: {},
   };
 
   rooms[roomIds].treasures = generateTreasures(

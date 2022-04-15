@@ -62,7 +62,7 @@ io.on('connection', (socket) => {
   gameManager.tryFirstTimeRoomSetup(
     gameManager.getPlayer(socket.id).room,
     gameManager.getPlayer(socket.id),
-    emitToRoom
+    emitToRoom,
   );
 
   console.log(`player ${socket.id} connected to room ${gameManager.getPlayer(socket.id).room}`);
