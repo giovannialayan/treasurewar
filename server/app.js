@@ -6,16 +6,15 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 // const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
-// const helmet = require('helmet');
+//const helmet = require('helmet');
 // const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
 // const _ = require('underscore');
 const gameManager = require('./gameManager');
+const config = require('./config.js');
 
 const router = require('./router.js');
-
-const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const app = express();
 
@@ -24,6 +23,14 @@ const io = socketIO(server, {
   pingTimeout: 60000,
 });
 
+// app.use(helmet({
+//   contentSecurityPolicy: {
+//     directives: {
+//       "script-src": ["'self'"],
+//       "img-src": ["'self'"]
+//     }
+//   }
+// }));
 // app.use(helmet());
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
@@ -38,8 +45,8 @@ app.use(cookieParser());
 
 router(app);
 
-server.listen(port, () => {
-  console.log(`listening on port ${port}`);
+server.listen(config.connections.http.port, () => {
+  console.log(`listening on port ${config.connections.http.port}`);
 });
 
 const emitToRoom = (data, room, event) => {

@@ -1,3 +1,83 @@
+.roomFormTitle {
+    margin: auto;
+}
+
+.roomFormHard {
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+.roomFormSubmit {
+    margin: auto;
+}
+
+.roomForm {    
+    display: grid;
+    justify-items: end;
+    justify-content: center;
+    row-gap: 10px;
+}
+
+.roomForm > div > input {
+    /* background-color: yellow; */
+}
+
+#gameSetup {
+    width: 30%;
+    margin: auto;
+    background-color: #ffa000;
+    padding: 10px;
+}
+
+#roomList {
+    margin-top: 20px; 
+}
+
+.roomListContainer {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.roomList {
+    display: flex;
+    flex-flow: row wrap;
+    margin-top: 20px;
+}
+
+.room {
+    display: grid;
+    justify-items: center;
+    justify-content: center;
+    background-color: #994400;
+    padding: 15px;
+}
+
+.room > p {
+    margin: 0;
+    padding: 5px 0px 5px 5px;
+    width: 100%;
+    text-align: start;
+}
+
+.room > p:nth-child(odd) {
+    background-color: #ffb000;
+}
+
+.room > p:nth-child(even) {
+    background-color: #ff9000;
+}
+
+.room > p > span {
+    color: #009;
+}
+
+.room > button {
+    margin: auto;
+    margin-top: 10px;
+}
+
 #gameContainer {
     margin: auto;
     width: 800px;

@@ -30,19 +30,32 @@ const RoomForm = (props) => {
             method="POST"
             className="roomForm"
         >
-            <label htmlFor="name">room name: </label>
-            <input id="roomName" type="text" name="name" placeholder="new room" />
-            <label htmlFor="maxPlayers">max players: </label>
-            <input id="maxPlayers" type="number" min="1" name="maxPlayers" />
-            <label htmlFor="minPlayers">min players to start: </label>
-            <input id="minPlayers" type="number" min="1" name="minPlayers" />
-            <label htmlFor="time">time(min): </label>
-            <input id="time" type="number" min="1" name="time" />
-            <label htmlFor="treasure">amount of treasure: </label>
-            <input id="treasure" type="number" min="1" name="treasure" />
-            <label htmlFor="difficulty">hard mode on: </label>
-            <input id="difficulty" type="checkbox" name="difficulty" />
-            <input className="roomSetupSubmit" type="submit" value="create room" />
+            <h2 className="roomFormTitle">create a room</h2>
+            <div className="roomFormName">
+                <label htmlFor="name" className="roomFormNameLabel">room name: </label>
+                <input id="roomName" type="text" name="name" placeholder="new room" className="roomFormNameInput"/>
+            </div>
+            <div className="roomFormMax">
+                <label htmlFor="maxPlayers" className="roomFormMaxLabel">max players: </label>
+                <input id="maxPlayers" type="number" min="1" name="maxPlayers" placeholder="10" className="roomFormMaxInput"/>
+            </div>
+            <div className="roomFormMin">
+                <label htmlFor="minPlayers" className="roomFormMinLabel">min players to start: </label>
+                <input id="minPlayers" type="number" min="1" name="minPlayers" placeholder="2" className="roomFormMinInput"/>
+            </div>
+            <div className="roomFormTime">
+                <label htmlFor="time" className="roomFormTimeLabel">time(min): </label>
+                <input id="time" type="number" min="1" name="time" placeholder="4" className="roomFormTimeInput"/>
+            </div>
+            <div className="roomFormTreasure">
+                <label htmlFor="treasure" className="roomFormTreasureLabel">amount of treasure: </label>
+                <input id="treasure" type="number" min="1" name="treasure" placeholder="10" className="roomFormTreasureInput"/>
+            </div>
+            <div className="roomFormHard">
+                <label htmlFor="difficulty" className="roomFormHardLabel">hard mode on: </label>
+                <input id="difficulty" type="checkbox" name="difficulty" className="roomFormHardInput"/>
+            </div>
+            <input className="roomFormSubmit" type="submit" value="create room" />
         </form>
     );
 };
@@ -50,8 +63,23 @@ const RoomForm = (props) => {
 const RoomList = (props) => {
     if(Object.keys(props.rooms).length === 0) {
         return (
-            <div className="roomList">
-                <h3 className="emptyRoomList"> no rooms yet</h3>
+            <div className="roomListContainer">
+                <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
+                {/* <h3 className="emptyRoomList"> no rooms yet</h3> */}
+                <div className="roomList">
+                    <div key={0} className="room">
+                    <p className="roomName"> name: <span>example room for styling</span> </p>
+                    <p className="roomMax"> max players: <span>10</span> </p>
+                    <p className="roomMin"> min players to start: <span>2</span> </p>
+                    <p className="roomTime"> time: <span>4:00</span> </p>
+                    <p className="roomTreasures"> amount of treasure: <span>10</span></p>
+                    <p className="roomDifficulty"> hard mode on: <span>no</span> </p>
+                    <p className="roomPlayers"> players in the room: <span>0</span></p>
+                    <button id="joinRoom" className="joinRoomButton" type="button">
+                        join
+                    </button>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -74,9 +102,11 @@ const RoomList = (props) => {
     });
 
     return (
-        <div className="roomList">
+        <div className="roomListContainer">
             <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
-            {roomNodes}
+            <div className="roomList">
+                {roomNodes}
+            </div>
         </div>
     );
 };
