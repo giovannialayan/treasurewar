@@ -65,48 +65,68 @@ const RoomList = (props) => {
         return (
             <div className="roomListContainer">
                 <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
-                {/* <h3 className="emptyRoomList"> no rooms yet</h3> */}
-                <div className="roomList">
-                    <div key={0} className="room">
-                    <p className="roomName"> name: <span>example room for styling</span> </p>
-                    <p className="roomMax"> max players: <span>10</span> </p>
-                    <p className="roomMin"> min players to start: <span>2</span> </p>
-                    <p className="roomTime"> time: <span>4:00</span> </p>
-                    <p className="roomTreasures"> amount of treasure: <span>10</span></p>
-                    <p className="roomDifficulty"> hard mode on: <span>no</span> </p>
-                    <p className="roomPlayers"> players in the room: <span>0</span></p>
-                    <button id="joinRoom" className="joinRoomButton" type="button">
-                        join
-                    </button>
-                    </div>
-                </div>
+                <h3 className="emptyRoomList"> no rooms yet</h3>
+                {/* <table className="roomList">
+                    <tbody>
+                    <tr>
+                        <th>name</th>
+                        <th>max players</th>
+                        <th>min players to start</th>
+                        <th>time</th>
+                        <th>amount of treasure</th>
+                        <th>hard mode on</th>
+                        <th>players in the room</th>
+                        <th></th>
+                    </tr>
+                    <tr key={0} className="room">
+                        <td className="roomName">example room for styling</td>
+                        <td className="roomMax">10</td>
+                        <td className="roomMin">2</td>
+                        <td className="roomTime">4:00</td>
+                        <td className="roomTreasures">10</td>
+                        <td className="roomDifficulty">no</td>
+                        <td className="roomPlayers">0</td>
+                        <td><button id="joinRoom" className="joinRoomButton" type="button">join</button></td>
+                    </tr>
+                    </tbody>
+                </table> */}
             </div>
         );
     }
 
     const roomNodes = Object.values(props.rooms).map(room => {
         return (
-            <div key={room._id} className="room">
-                <h3 className="roomName"> name: {room.name} </h3>
-                <h3 className="roomMax"> max players: {room.maxPlayers} </h3>
-                <h3 className="roomMin"> min players to start: {room.minPlayers} </h3>
-                <h3 className="roomTime"> time: {room.time + ':00'} </h3>
-                <h3 className="roomTreasures"> amount of treasure: {room.numTreasures}</h3>
-                <h3 className="roomDifficulty"> hard mode on: {room.hard ? 'yes' : 'no'} </h3>
-                <h3 className="roomPlayers"> players in the room: {room.currentPlayers}</h3>
-                <button id="joinRoom" className="joinRoomButton" type="button" onClick={() => start(room._id, room.hard)}>
-                    join
-                </button>
-            </div>
+            <tr key={room._id} className="room">
+                <td className="roomName">{room.name}</td>
+                <td className="roomMax">{room.maxPlayers}</td>
+                <td className="roomMin">{room.minPlayers}</td>
+                <td className="roomTime">{room.time + ':00'}</td>
+                <td className="roomTreasures">{room.numTreasures}</td>
+                <td className="roomDifficulty">{room.hard ? 'yes' : 'no'}</td>
+                <td className="roomPlayers">{room.currentPlayers}</td>
+                <td><button id="joinRoom" className="joinRoomButton" type="button" onClick={() => start(room._id, room.hard)}>join</button></td>
+            </tr>
         );
     });
 
     return (
         <div className="roomListContainer">
             <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
-            <div className="roomList">
-                {roomNodes}
-            </div>
+            <table className="roomList">
+                <tbody>
+                    <tr>
+                        <th>name</th>
+                        <th>max players</th>
+                        <th>min players to start</th>
+                        <th>time</th>
+                        <th>amount of treasure</th>
+                        <th>hard mode on</th>
+                        <th>players in the room</th>
+                        <th></th>
+                    </tr>
+                    {roomNodes}
+                </tbody>
+            </table>
         </div>
     );
 };
@@ -148,6 +168,8 @@ const init = async () => {
     );
 
     getRoomList();
+
+    document.querySelector('#leaveRoomButton').addEventListener('click', getRoomList);
 };
 
 window.onload = init;

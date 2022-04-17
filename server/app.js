@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 // const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
-//const helmet = require('helmet');
+// const helmet = require('helmet');
 // const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
     gameManager.getRoomByPlayer(socket.id).numPlayers + 1,
   );
 
-  //if the conditions for starting the game have been met, start the game
+  // if the conditions for starting the game have been met, start the game
   gameManager.tryStartGame(gameManager.getPlayer(socket.id).room, emitToRoom);
 
   console.log(`player ${socket.id} connected to room ${gameManager.getPlayer(socket.id).room}`);

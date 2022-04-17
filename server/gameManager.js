@@ -57,9 +57,7 @@ const createPlayer = (id, room) => {
 
 const getRoom = (id) => rooms[id];
 
-const getRoomByPlayer = id => {
-  return rooms[players[id].room];
-};
+const getRoomByPlayer = (id) => rooms[players[id].room];
 
 const changeNumPlayerOfRoom = (id, num) => {
   rooms[id].numPlayers = num;
@@ -172,9 +170,9 @@ const getRoomObj = () => {
   return roomObj;
 };
 
-//start the game if the number of players is at least at the minimum number of players
+// start the game if the number of players is at least at the minimum number of players
 const tryStartGame = (roomId, callback) => {
-  if(rooms[roomId].numPlayers >= rooms[roomId].minPlayers) {
+  if (rooms[roomId].numPlayers >= rooms[roomId].minPlayers) {
     rooms[roomId].interval = setInterval(() => {
       timer(roomId, callback);
     }, 1000);

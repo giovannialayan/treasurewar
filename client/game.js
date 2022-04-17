@@ -42,11 +42,13 @@ let dt = 1/60;
 let game;
 let roomId;
 let hardMode = false;
+let leaveButton;
 
 const startGame = (room, hard) => {
     roomId = room
     hardMode = hard;
     game = new Phaser.Game(config);
+    leaveButton = document.querySelector('#leaveRoomButton');
 };
 
 function preload() {
@@ -60,7 +62,12 @@ function preload() {
 
 function create() {
     const scene = this;
-    this.socket = io(`/?room=${roomId}`);
+    this.socket = io(`/?room=${roomId}`, {autoConnect: false});
+    this.socket.open();
+
+    leaveButton.addEventListener('click', () => {leaveGame(scene);});
+    leaveButton.classList.remove('hidden');
+
     this.otherPlayers = this.physics.add.group();
 
     this.socket.on('currentPlayers', (players) => {
@@ -317,5 +324,13 @@ function addTreasure(scene, treasureData) {
     newTreasure.challenge = treasureData.challenge;
     scene.treasures.add(newTreasure);
 }
+
+const leaveGame = (scene) => {
+    scene.socket.disconnect();
+    leaveButton.classList.add('hidden');
+    game.destroy(true, false);
+    document.querySelector('#gameSetup').classList.remove('hidden');
+    document.querySelector('#roomList').classList.remove('hidden');
+};
 
 export {startGame};

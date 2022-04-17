@@ -19,9 +19,9 @@
     row-gap: 10px;
 }
 
-.roomForm > div > input {
-    /* background-color: yellow; */
-}
+/* .roomForm > div > input {
+    background-color: yellow;
+} */
 
 #gameSetup {
     width: 30%;
@@ -42,19 +42,105 @@
 
 .roomList {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column nowrap;
     margin-top: 20px;
 }
 
-.room {
-    display: grid;
-    justify-items: center;
-    justify-content: center;
+.roomName {
+    grid-area: name;
+}
+
+.roomMax {
+    grid-area: max;
+}
+
+.roomMin {
+    grid-area: min;
+}
+
+.roomTime {
+    grid-area: time;
+}
+
+.roomTreasures {
+    grid-area: treas;
+}
+
+.roomDifficulty {
+    grid-area: diff;
+}
+
+.roomPlayers {
+    grid-area: players;
+}
+
+.joinRoomButton {
+    grid-area: button;
+}
+
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px;
+}
+
+td {
+    text-align: center;
+}
+
+tbody > tr:nth-child(odd) {
+    background-color: #ff9000;
+}
+
+tbody > tr:nth-child(even) {
+    background-color: #ffb000;
+}
+
+th {
+    background-color: #b50;
+    color: white;
+    border: 1px solid black;
+}
+
+tr:hover {
+    background-color: red;
+}
+
+/* .room {
+    display: flex;
+    flex-flow: column nowrap;
+
     background-color: #994400;
     padding: 15px;
 }
 
-.room > p {
+.roomInfo {
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 0px;
+}
+
+.roomName {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.room > p, .roomInfo {
+    background-color: #ffb000;
+}
+
+.roomInfo > p {
+    margin: 0px 10px 0px 10px;
+    padding: 5px 0px 5px 0px;
+} */
+
+/* .room > p {
     margin: 0;
     padding: 5px 0px 5px 5px;
     width: 100%;
@@ -71,7 +157,7 @@
 
 .room > p > span {
     color: #009;
-}
+} */
 
 .room > button {
     margin: auto;
