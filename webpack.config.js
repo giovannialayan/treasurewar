@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = {
     entry: {
         game: ['./client/rooms.jsx', './client/game.js'],
+        shop: ['./client/shop.jsx'],
     },
     module: {
         rules: [

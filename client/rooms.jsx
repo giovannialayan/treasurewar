@@ -156,7 +156,7 @@ const getRoomList = async () => {
     );
 };
 
-const init = async () => {
+const init = () => {
     ReactDOM.render(
         <RoomForm/>,
         document.getElementById('gameSetup')
