@@ -1,0 +1,15 @@
+.navbar {
+    display: flex;
+    flex-flow: row nowrap;
+
+    background-color: #ff9000;
+}
+
+.navbar > a {
+    padding: 15px;
+    background-color: #ff6000;
+}
+
+.navbar > a:hover {
+    background-color: #ff4500;
+}
