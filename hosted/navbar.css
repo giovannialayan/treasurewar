@@ -1,13 +1,18 @@
 .navbar {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: center;
 
-    background-color: #ff9000;
+    margin: auto;
+    margin-bottom: 20px;
+    width: 30%;
 }
 
 .navbar > a {
     padding: 15px;
     background-color: #ff6000;
+    text-decoration: none;
+    color: #fff;
 }
 
 .navbar > a:hover {

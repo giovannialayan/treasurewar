@@ -3,18 +3,25 @@
   <meta charset="utf-8"/>
   <title>treasure war</title>
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
+  <link rel="stylesheet" type="text/css" href="/assets/game.css"/>
+  <link rel="stylesheet" type="text/css" href="/assets/navbar.css"/>
   <script src="/socket.io/socket.io.js"></script>
   <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
 </head>
 <body>
-    <div id="navbar"></div>
-    <div id="gameSetup"></div>
-    <div id="roomList"></div>
-    <div id="gameContainer"></div>
-    <button id="leaveRoomButton" class="hidden">leave room</button>
-    <script src="/assets/gameBundle.js"></script>
+  <nav class="navbar">
+    <a href="/" class="navHome">home</a>
+    <a href="/game" class="navGame">game</a>
+    <a href="/leaderboard" class="navBoard">leaderboard</a>
+    <a href="/shop" class="navShop">shop</a>
+    <a href="/account" className="navAccount">account</a>
+  </nav>
+  <div id="gameSetup"></div>
+  <div id="roomList"></div>
+  <div id="gameContainer"></div>
+  <button id="leaveRoomButton" class="hidden">leave room</button>
+  <script src="/assets/gameBundle.js"></script>
 </body>
 </html>

@@ -6,9 +6,16 @@
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <link rel="stylesheet" type="text/css" href="/assets/shopStyle.css"/>
+  <link rel="stylesheet" type="text/css" href="/assets/navbar.css"/>
 </head>
 <body> 
-  <div id="navbar"></div>
+  <nav class="navbar">
+    <a href="/" class="navHome">home</a>
+    <a href="/game" class="navGame">game</a>
+    <a href="/leaderboard" class="navBoard">leaderboard</a>
+    <a href="/shop" class="navShop">shop</a>
+    <a href="/account" className="navAccount">account</a>
+  </nav>
   <section id="shop"></section>
   <script src="/assets/shopBundle.js"></script>
 </body>

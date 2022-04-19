@@ -46,38 +46,6 @@
     margin-top: 20px;
 }
 
-.roomName {
-    grid-area: name;
-}
-
-.roomMax {
-    grid-area: max;
-}
-
-.roomMin {
-    grid-area: min;
-}
-
-.roomTime {
-    grid-area: time;
-}
-
-.roomTreasures {
-    grid-area: treas;
-}
-
-.roomDifficulty {
-    grid-area: diff;
-}
-
-.roomPlayers {
-    grid-area: players;
-}
-
-.joinRoomButton {
-    grid-area: button;
-}
-
 table, th, td {
     border: 1px solid;
 }
@@ -111,53 +79,6 @@ th {
 tr:hover {
     background-color: red;
 }
-
-/* .room {
-    display: flex;
-    flex-flow: column nowrap;
-
-    background-color: #994400;
-    padding: 15px;
-}
-
-.roomInfo {
-    display: flex;
-    flex-flow: row nowrap;
-    margin-top: 0px;
-}
-
-.roomName {
-    text-align: center;
-    margin-bottom: 0px;
-}
-
-.room > p, .roomInfo {
-    background-color: #ffb000;
-}
-
-.roomInfo > p {
-    margin: 0px 10px 0px 10px;
-    padding: 5px 0px 5px 0px;
-} */
-
-/* .room > p {
-    margin: 0;
-    padding: 5px 0px 5px 5px;
-    width: 100%;
-    text-align: start;
-}
-
-.room > p:nth-child(odd) {
-    background-color: #ffb000;
-}
-
-.room > p:nth-child(even) {
-    background-color: #ff9000;
-}
-
-.room > p > span {
-    color: #009;
-} */
 
 .room > button {
     margin: auto;

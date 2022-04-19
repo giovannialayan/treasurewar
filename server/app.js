@@ -4,17 +4,33 @@ const compression = require('compression');
 const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
 // const helmet = require('helmet');
-// const session = require('express-session');
+const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
 // const _ = require('underscore');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+const csrf = require('csurf');
 const gameManager = require('./gameManager');
 const config = require('./config.js');
 
 const router = require('./router.js');
+
+mongoose.connect(process.env.MONGODB_URI, (err) => {
+  if (err) {
+    console.log('could not connect to database');
+    throw err;
+  }
+});
+
+const redisClient = redis.createClient({
+  legacyMode: true,
+  url: process.env.REDISCLOUD_URL,
+});
+redisClient.connect().catch(console.error);
 
 const app = express();
 
@@ -38,10 +54,33 @@ app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(session({
+  key: 'sessionid',
+  store: new RedisStore({
+    client: redisClient,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+  },
+}));
+
 app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.use(cookieParser());
+
+app.use(csrf());
+app.use((err, req, res, next) => {
+  if (err.code !== 'EBADCSRFTOKEN') {
+    return next(err);
+  }
+
+  console.log('missing csrf token');
+  return false;
+});
 
 router(app);
 
