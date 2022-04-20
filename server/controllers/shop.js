@@ -5,8 +5,12 @@ const { ShopItem } = models;
 const shopPage = (req, res) => res.render('shop');
 
 const makeShopItem = async (req, res) => {
-  if (!req.body.name || !req.body.desc || !req.body.img || !req.body.price) {
-    return res.status(400).json({ error: 'name, desc, img, and price are required' });
+  if (!req.body.name || !req.body.desc || !req.body.img || !req.body.price || !req.body.password) {
+    return res.status(400).json({ error: 'name, desc, img, price, and password are required' });
+  }
+
+  if(req.body.password !== process.env.SHOP_PASSWORD) {
+    return res.status(400).json({error: 'wrong password'});
   }
 
   const itemData = {

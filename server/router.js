@@ -18,8 +18,10 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
   app.get('/getAccount', mid.requiresSecure, mid.requiresLogin, controllers.account.getAccountInfo);
+  app.post('/equipSkin', mid.requiresSecure, mid.requiresLogin, controllers.account.equipSkin);
 
   app.get('/getShopItems', mid.requiresSecure, mid.requiresLogin, controllers.shop.getShopItems);
+  app.post('/buyItem', mid.requiresSecure, mid.requiresLogin, controllers.account.addItemToAccount);
 };
 
 module.exports = router;

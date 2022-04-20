@@ -62,6 +62,15 @@ const signup = async (req, res) => {
   }
 };
 
+const equipSkin = (req, res) => {
+  if(!req.body.name) {
+    return res.status(400).json({ error: 'skin name required' });
+  }
+
+  //https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+  //let doc = await account.findOneAndUpdate({ name: req.session.account._id }, {});
+};
+
 const getAccountInfo = (req, res) => res.json({ account: req.session.account });
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });

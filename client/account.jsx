@@ -1,3 +1,5 @@
+const helper = require('./helper.js');
+
 const AccountInfo = (props) => {
     const skinNodes = props.account.account.skins.map(skin => {
         return (
@@ -34,6 +36,12 @@ const AccountInfo = (props) => {
         </div>
     );
 }
+
+//
+const equipSkin = async (skinName) => {
+    const _csrf = document.getElementById('_csrf').value;
+    helper.sendPost('/equipSkin', {name: skinName, _csrf});
+};
 
 const loadAccountFromServer = async () => {
     const response = await fetch('/getAccount');
