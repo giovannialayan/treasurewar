@@ -19,11 +19,13 @@ const AccountSchema = new mongoose.Schema({
   },
   skins: {
     type: Array,
-    default: [],
+    default: [{
+      _id: 0, img: '/assets/img/robot_96px.png', name: 'j1m', desc: 'J1m\'s a hard worker, it won\'t complain about any job you throw at it.',
+    }],
   },
   equippedSkin: {
     type: String,
-    default: 'jim',
+    default: 'j1m',
   },
   gamesPlayed: {
     type: Number,

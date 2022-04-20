@@ -15,6 +15,11 @@ const router = (app) => {
 
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.account.login);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.account.signup);
+  app.get('/logout', mid.requiresLogin, controllers.Account.logout);
+
+  app.get('/getAccount', mid.requiresSecure, mid.requiresLogin, controllers.account.getAccountInfo);
+
+  app.get('/getShopItems', mid.requiresSecure, mid.requiresLogin, controllers.shop.getShopItems);
 };
 
 module.exports = router;

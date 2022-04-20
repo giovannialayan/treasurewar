@@ -29,9 +29,19 @@ const ShopItemSchema = new mongoose.Schema({
 });
 
 ShopItemSchema.statics.toAPI = (doc) => ({
-  username: doc.username,
-  _id: doc._id,
+  name: doc.name,
+  img: doc.img,
+  desc: doc.desc,
+  price: doc.price,
 });
+
+ShopItemSchema.statics.findByName = (name, callback) => {
+  const search = {
+    name: mongoose.Types.ObjectId(name),
+  };
+
+  return ShopItemSchema.find(search).select('name img desc price').lean().exec(callback);
+};
 
 ShopItemModel = mongoose.model('ShopItem', ShopItemSchema);
 module.exports = ShopItemModel;

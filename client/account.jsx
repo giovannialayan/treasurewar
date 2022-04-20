@@ -2,7 +2,7 @@ const AccountInfo = (props) => {
     const skinNodes = props.account.account.skins.map(skin => {
         return (
             <div key={skin._id} className="skin">
-                <img src={skin.imageSrc} className="skinImg"/>
+                <img src={skin.img} className="skinImg"/>
                 <p className="skinName">{skin.name}</p>
                 <p className="skinDesc">{skin.desc}</p>
                 <button 
@@ -27,8 +27,10 @@ const AccountInfo = (props) => {
             <p className="topThrees">top three finishes: props.account.topThrees</p>
             <p className="winWarning">note: wins and top three finishes are only counted in games where at least 10 players are present when the game ends.</p>
             <div className="skins">
+                your skins
                 {skinNodes}
             </div>
+            <input id="_csrfDelete" type="hidden" name="_csrf" value={props.csrf} />
         </div>
     );
 }
