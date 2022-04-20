@@ -31,7 +31,7 @@ const Shop = (props) => {
 const buyItem = async (itemName) => {
     //make post request to add item to this account's skins list
     const _csrf = document.getElementById('_csrf').value;
-    helper.sendPost('/buyItem', {itemName, _csrf});
+    helper.sendPost('/buyItem', {name: itemName, _csrf});
 };
 
 const getShopItemsFromServer = async () => {

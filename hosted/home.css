@@ -1,3 +1,29 @@
+#login {
+    background-color: #ff9000;
+    width: 50%;
+    margin: auto;
+}
+
+#loginForm, #signupForm {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#loginForm > div, #signupForm > div {
+    padding: 15px;
+}
+
+#loginForm > input, #signupForm > input {
+    margin: 0px 15px 15px 15px;
+}
+
+#loginButtons {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
 .hidden {
     display: none;
 }

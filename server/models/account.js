@@ -20,12 +20,12 @@ const AccountSchema = new mongoose.Schema({
   skins: {
     type: Array,
     default: [{
-      _id: 0, img: '/assets/img/robot_96px.png', name: 'j1m', desc: 'J1m\'s a hard worker, it won\'t complain about any job you throw at it.',
+      _id: 0, img: '/assets/img/robot_96px.png', name: 'J1m', desc: 'J1m\'s a hard worker, it won\'t complain about any job you throw at it.',
     }],
   },
   equippedSkin: {
     type: String,
-    default: 'j1m',
+    default: 'J1m',
   },
   gamesPlayed: {
     type: Number,

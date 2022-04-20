@@ -49,10 +49,14 @@ const LoginWindow = (props) => {
             method="POST"
             className="mainForm"
         >
-            <label htmlFor="username">username: </label>
-            <input id="user" type="text" name="username" placeholder="username" />
-            <label htmlFor="pass">password: </label>
-            <input id="pass" type="password" name="pass" placeholder="password" />
+            <div className='loginUser'>
+                <label htmlFor="username">username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
+            </div>
+            <div className='loginpass'>
+                <label htmlFor="pass">password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
+            </div>
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="sign in" />
         </form>
@@ -68,12 +72,18 @@ const SignupWindow = (props) => {
             method="POST"
             className="mainForm"
         >
-            <label htmlFor="username">username: </label>
-            <input id="user" type="text" name="username" placeholder="username" />
-            <label htmlFor="pass">password: </label>
-            <input id="pass" type="password" name="pass" placeholder="password" />
-            <label htmlFor="pass2">password: </label>
-            <input id="pass2" type="password" name="pass2" placeholder="retype password" />
+            <div className='signupuser'>
+                <label htmlFor="username">username: </label>
+                <input id="user" type="text" name="username" placeholder="username" />
+            </div>
+            <div className='signupPass'>
+                <label htmlFor="pass">password: </label>
+                <input id="pass" type="password" name="pass" placeholder="password" />
+            </div>
+            <div className='signupPass2'>
+                <label htmlFor="pass2">password: </label>
+                <input id="pass2" type="password" name="pass2" placeholder="retype password" />
+            </div>
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="sign up" />
         </form>
@@ -90,7 +100,7 @@ const init = async () => {
 
     loginButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<LoginWindow csrf={data.csrfToken} />, document.getElementById('content'));
+        ReactDOM.render(<LoginWindow csrf={data.csrfToken} />, document.getElementById('login'));
         loginButton.classList.toggle('hidden');
         signupButton.classList.toggle('hidden');
         return false;
@@ -98,14 +108,13 @@ const init = async () => {
 
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<SignupWindow csrf={data.csrfToken} />, document.getElementById('content'));
+        ReactDOM.render(<SignupWindow csrf={data.csrfToken} />, document.getElementById('login'));
         loginButton.classList.toggle('hidden');
         signupButton.classList.toggle('hidden');
         return false;
     });
 
-    ReactDOM.render(<LoginWindow csrf={data.csrfToken}/>,
-        document.getElementById('content'));
+    ReactDOM.render(<LoginWindow csrf={data.csrfToken}/>, document.getElementById('login'));
 };
 
 window.onload = init;

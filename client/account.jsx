@@ -32,15 +32,15 @@ const AccountInfo = (props) => {
                 your skins
                 {skinNodes}
             </div>
+            <button className="changePassButton" onClick={() => changePassword()}>change your password</button>
             <input id="_csrfDelete" type="hidden" name="_csrf" value={props.csrf} />
         </div>
     );
 }
 
-//
 const equipSkin = async (skinName) => {
     const _csrf = document.getElementById('_csrf').value;
-    helper.sendPost('/equipSkin', {name: skinName, _csrf});
+    helper.sendPost('/equipSkin', {name: skinName, _csrf}, loadAccountFromServer);
 };
 
 const loadAccountFromServer = async () => {
@@ -53,7 +53,7 @@ const loadAccountFromServer = async () => {
     ReactDOM.render(<AccountInfo account={data.account} csrf={csrfData.csrfToken}/>, document.getElementById('account'));
 };
 
-const init = () => {
+const init = async () => {
     const response = await fetch('/getToken');
     const data = await response.json();
 

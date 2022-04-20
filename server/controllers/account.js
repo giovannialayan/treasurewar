@@ -1,6 +1,6 @@
 const models = require('../models');
 
-const { Account } = models;
+const { Account, ShopItem } = models;
 
 const accountPage = (req, res) => res.render('account');
 
@@ -62,13 +62,33 @@ const signup = async (req, res) => {
   }
 };
 
-const equipSkin = (req, res) => {
-  if(!req.body.name) {
+const equipSkin = async (req, res) => {
+  if (!req.body.name) {
     return res.status(400).json({ error: 'skin name required' });
   }
 
-  //https://mongoosejs.com/docs/tutorials/findoneandupdate.html
-  //let doc = await account.findOneAndUpdate({ name: req.session.account._id }, {});
+  try {
+    req.session.account.equippedSkin = req.body.name;
+    await req.session.account.save();
+    return res.status(201).json({ account: req.session.account });
+  } catch (err) {
+    return res.status(400).json({ error: 'an error occurred' });
+  }
+};
+
+const addItemToAccount = async (req, res) => {
+  if (!req.body.name) {
+    return res.status(400).json({ error: 'item name required' });
+  }
+
+  try {
+    const item = await ShopItem.find({ name: req.body.name });
+    req.session.account.skins.push(item);
+    req.session.account.save();
+    return res.status(201).json({ account: req.session.account });
+  } catch (err) {
+    return res.status(400).json({ error: 'an error occurred' });
+  }
 };
 
 const getAccountInfo = (req, res) => res.json({ account: req.session.account });
@@ -83,4 +103,6 @@ module.exports = {
   signup,
   getToken,
   getAccountInfo,
+  equipSkin,
+  addItemToAccount,
 };

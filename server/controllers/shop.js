@@ -9,8 +9,8 @@ const makeShopItem = async (req, res) => {
     return res.status(400).json({ error: 'name, desc, img, price, and password are required' });
   }
 
-  if(req.body.password !== process.env.SHOP_PASSWORD) {
-    return res.status(400).json({error: 'wrong password'});
+  if (req.body.password !== process.env.SHOP_PASSWORD) {
+    return res.status(400).json({ error: 'wrong password' });
   }
 
   const itemData = {
