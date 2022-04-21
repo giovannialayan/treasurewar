@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 
 const AccountInfo = (props) => {
     let skinNodes;
+    console.log(props, props.account);
     if(props.account.skins) {
         skinNodes = props.account.skins.map(skin => {
             return (
@@ -17,7 +18,7 @@ const AccountInfo = (props) => {
                             }
                         }}
                     >
-                        {skin.name === props.account.equippedSkin ? 'equip' : 'equipped'}
+                        {skin.name === props.account.equippedSkin ? 'equipped' : 'equip'}
                     </button>
                 </div>
             );
@@ -49,7 +50,7 @@ const PasswordChange = (props) => {
         <form id="passChangeForm"
             name="passChangeForm"
             onSubmit={handlePassChange}
-            action="/passChange"
+            action="/changePass"
             method="POST"
             className="mainForm"
         >
