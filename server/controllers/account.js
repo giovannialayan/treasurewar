@@ -82,13 +82,14 @@ const addItemToAccount = async (req, res) => {
   }
 
   try {
-    const item = await ShopItem.find({ name: req.body.name });
-    const changedAccount = await Account.find({ username: req.session.username });
+    const item = await ShopItem.findOne({ name: req.body.name });
+    const changedAccount = await Account.findOne({ username: req.session.account.username });
     changedAccount.skins.push(item);
     await changedAccount.save();
     req.session.account = Account.toAPI(changedAccount);
     return res.status(201).json({ account: req.session.account });
   } catch (err) {
+    console.log(err);
     return res.status(400).json({ error: 'an error occurred' });
   }
 };

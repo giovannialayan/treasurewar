@@ -2,7 +2,6 @@ const helper = require('./helper.js');
 
 const AccountInfo = (props) => {
     let skinNodes;
-    console.log(props, props.account);
     if(props.account.skins) {
         skinNodes = props.account.skins.map(skin => {
             return (
