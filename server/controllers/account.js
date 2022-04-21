@@ -52,8 +52,6 @@ const signup = async (req, res) => {
     req.session.account = Account.toAPI(newAccount);
     return res.json({ redirect: '/account' });
   } catch (err) {
-    console.log(err);
-
     if (err.code === 11000) {
       return res.status(400).json({ error: 'username already in use' });
     }
@@ -91,6 +89,36 @@ const addItemToAccount = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  const currPass = `${req.body.currPass}`;
+  const newPass = `${req.body.newPass}`;
+  const newPass2 = `${req.body.newPass2}`;
+
+  if (!currPass || !newPass || !newPass2) {
+    return res.status(400).json({ error: 'all fields are required' });
+  }
+
+  Account.authenticate(req.session.username, currPass, (err, account) => {
+    if(err || !account) {
+      return res.status(401).json({error: 'current password is wrong'});
+    }
+  });
+
+  if (newPass !== newPass2) {
+    return res.status(400).json({ error: 'passwords do not match' });
+  }
+
+  try {
+    const hash = await Account.generateHash(newPass);
+    //this doesnt work
+    req.session.account.password = hash;
+    await req.session.account.save();
+    return res.json({ redirect: '/account' });
+  } catch (err) {
+    return res.status(400).json({ error: 'an error occurred' });
+  }
+};
+
 const getAccountInfo = (req, res) => res.json({ account: req.session.account });
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
@@ -105,4 +133,5 @@ module.exports = {
   getAccountInfo,
   equipSkin,
   addItemToAccount,
+  changePassword,
 };

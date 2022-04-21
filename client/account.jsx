@@ -1,42 +1,92 @@
 const helper = require('./helper.js');
 
 const AccountInfo = (props) => {
-    const skinNodes = props.account.account.skins.map(skin => {
-        return (
-            <div key={skin._id} className="skin">
-                <img src={skin.img} className="skinImg"/>
-                <p className="skinName">{skin.name}</p>
-                <p className="skinDesc">{skin.desc}</p>
-                <button 
-                    className={skin.name !== props.account.equippedSkin ? 'equipSkinButton' : 'equippedSkinButton'}
-                    onClick={() => {
-                        if(skin.name !== props.account.equippedSkin) {
-                            equipSkin(skin.name);
-                        }
-                    }}
-                >
-                    {skin.name === props.account.equippedSkin ? 'equip' : 'equipped'}
-                </button>
-            </div>
-        );
-    });
+    let skinNodes;
+    if(props.account.skins) {
+        skinNodes = props.account.skins.map(skin => {
+            return (
+                <div key={skin._id} className="skin">
+                    <img src={skin.img} className="skinImg"/>
+                    <p className="skinName">{skin.name}</p>
+                    <p className="skinDesc">{skin.desc}</p>
+                    <button 
+                        className={skin.name !== props.account.equippedSkin ? 'equipSkinButton' : 'equippedSkinButton'}
+                        onClick={() => {
+                            if(skin.name !== props.account.equippedSkin) {
+                                equipSkin(skin.name);
+                            }
+                        }}
+                    >
+                        {skin.name === props.account.equippedSkin ? 'equip' : 'equipped'}
+                    </button>
+                </div>
+            );
+        });
+    }
+    else {
+        skinNodes = '';
+    }
 
     return (
         <div className="account">
-            <p className="username">props.account.username</p>
-            <p className="gamesPlayed">games played: props.account.gamesPlayed</p>
-            <p className="wins">wins: props.account.wins</p>
-            <p className="topThrees">top three finishes: props.account.topThrees</p>
+            <p className="username">{props.account.username}</p>
+            <p className="gamesPlayed">games played: {props.account.gamesPlayed}</p>
+            <p className="wins">wins: {props.account.wins}</p>
+            <p className="topThrees">top three finishes: {props.account.topThrees}</p>
             <p className="winWarning">note: wins and top three finishes are only counted in games where at least 10 players are present when the game ends.</p>
             <div className="skins">
                 your skins
                 {skinNodes}
             </div>
-            <button className="changePassButton" onClick={() => changePassword()}>change your password</button>
-            <input id="_csrfDelete" type="hidden" name="_csrf" value={props.csrf} />
+            <button id="changePassButton" className="changePassButton">change your password</button>
+            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
         </div>
     );
-}
+};
+
+const PasswordChange = (props) => {
+    return (
+        <form id="passChangeForm"
+            name="passChangeForm"
+            onSubmit={handlePassChange}
+            action="/passChange"
+            method="POST"
+            className="mainForm"
+        >
+            <div className='passChangeCurrPass'>
+                <label htmlFor="currPass">current password: </label>
+                <input id="currPass" type="password" name="currPass" placeholder="current password" />
+            </div>
+            <div className='passChangeNewPass'>
+                <label htmlFor="newPass">password: </label>
+                <input id="newPass" type="password" name="newPass" placeholder="new password" />
+            </div>
+            <div className='passChangeNewPass2'>
+                <label htmlFor="newPass2">password: </label>
+                <input id="newPass2" type="password" name="newPass2" placeholder="retype new password" />
+            </div>
+            <input className="formSubmit" type="submit" value="change password" />
+        </form>
+    );
+};
+
+const handlePassChange = (e) => {
+    e.preventDefault();
+
+    const currPass = e.target.querySelector('#currPass').value;
+    const newPass = e.target.querySelector('#newPass').value;
+    const newPass2 = e.target.querySelector('#newPass2').value;
+    const _csrf = document.querySelector('#_csrf').value;
+
+    if(!currPass || !newPass || !newPass2) {
+        console.log('username or password is empty');
+        return false;
+    }
+
+    helper.sendPost(e.target.action, {currPass, newPass, newPass2, _csrf});
+
+    return false;
+};
 
 const equipSkin = async (skinName) => {
     const _csrf = document.getElementById('_csrf').value;
@@ -57,9 +107,18 @@ const init = async () => {
     const response = await fetch('/getToken');
     const data = await response.json();
 
-    ReactDOM.render(<AccountInfo account={{}} csrf={data.csrfToken}/>, document.getElementById('account'));
+    ReactDOM.render(<AccountInfo account={{skins:[]}} csrf={data.csrfToken}/>, document.getElementById('account'));
 
     loadAccountFromServer();
+
+    const passChangeDiv = document.getElementById('passwordChange');
+    ReactDOM.render(<PasswordChange/>, passChangeDiv);
+
+    passChangeDiv.classList.add('hidden');
+    const changePassButton = document.getElementById('changePassButton');
+    changePassButton.addEventListener('click', (e) => {
+        passChangeDiv.classList.toggle('hidden');
+    });
 };
 
 window.onload = init;
