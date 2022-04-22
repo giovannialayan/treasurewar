@@ -1,4 +1,7 @@
 const _ = require('underscore');
+const models = require('./models');
+
+const { Account } = models;
 
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 const worldDims = { width: 1000, height: 1000 };
@@ -10,23 +13,61 @@ const players = {};
 const rooms = {};
 let roomIds = 0;
 
+// save win and top three data to database
+const saveDataToAccounts = async (users) => {
+  try {
+    let doc; 
+    let doc2; 
+    let doc3;
+
+    switch (users.length) {
+      case 1:
+        doc = await Account.findOne({ username: users[0].name });
+        doc.wins++;
+        doc.topThrees++;
+        doc.save();
+        break;
+
+      case 2:
+        doc = await Account.findOne({ username: users[0].name });
+        doc.wins++;
+        doc.topThrees++;
+        await doc.save();
+
+        doc2 = await Account.findOne({ username: users[1].name });
+        doc2.topThrees++;
+        await doc2.save();
+        break;
+
+      default:
+        doc = await Account.findOne({ username: users[0].name });
+        doc.wins++;
+        doc.topThrees++;
+        await doc.save();
+
+        doc2 = await Account.findOne({ username: users[1].name });
+        doc2.topThrees++;
+        await doc2.save();
+
+        doc3 = await Account.findOne({ username: users[2].name });
+        doc3.topThrees++;
+        await doc3.save();
+        break;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 // end the game for a room and emit the players in the room in order of their score
 const endGame = (room, callback) => {
   const playersScoreOrder = _.sortBy(Object.values(
     rooms[room].roomPlayers,
-  ), (player) => player.score);
-
-  for (let i = 0; i < playersScoreOrder.length; i++) {
-    for (let j = 0; j < playersScoreOrder - i - 1; j++) {
-      if (playersScoreOrder[j].score > playersScoreOrder[j + 1].score) {
-        const temp = playersScoreOrder[j];
-        playersScoreOrder[j] = playersScoreOrder[j + 1];
-        playersScoreOrder[j + 1] = temp;
-      }
-    }
-  }
+  ), (player) => player.score).reverse();
 
   clearInterval(rooms[room].interval);
+
+  saveDataToAccounts(playersScoreOrder);
 
   callback(playersScoreOrder, room, 'playerWon');
 };

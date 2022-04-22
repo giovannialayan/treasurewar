@@ -7,6 +7,7 @@ module.exports = {
         login: ['./client/login.jsx'],
         account: ['./client/account.jsx'],
         leaderboard: ['./client/leaderboard.jsx'],
+        home: ['./client/home.js'],
     },
     module: {
         rules: [

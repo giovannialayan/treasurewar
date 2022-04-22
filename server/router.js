@@ -5,6 +5,7 @@ const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.account.getToken);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.account.loginPage);
+  app.get('/home', mid.requiresSecure, mid.requiresLogin, controllers.account.homePage);
   app.get('/game', mid.requiresSecure, mid.requiresLogin, controllers.game.gamePage);
   app.get('/shop', mid.requiresSecure, mid.requiresLogin, controllers.shop.shopPage);
   app.get('/account', mid.requiresSecure, mid.requiresLogin, controllers.account.accountPage);

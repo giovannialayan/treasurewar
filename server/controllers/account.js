@@ -5,7 +5,11 @@ const { Account, ShopItem } = models;
 const accountPage = (req, res) => res.render('account');
 
 const loginPage = (req, res) => {
-  res.render('home', { csrfToken: req.csrfToken() });
+  res.render('login', { csrfToken: req.csrfToken() });
+};
+
+const homePage = (req, res) => {
+  res.render('home');
 };
 
 const logout = (req, res) => {
@@ -163,4 +167,5 @@ module.exports = {
   equipSkin,
   addItemToAccount,
   changePassword,
+  homePage,
 };

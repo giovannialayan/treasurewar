@@ -1,7 +1,7 @@
 const Navbar = (props) => {
     return (
         <nav className="navbar">
-            <a href="/" className="navHome">home</a>
+            <a href="/home" className="navHome">home</a>
             <a href="/game" className="navGame">game</a>
             <a href="/leaderboard" className="navBoard">leaderboard</a>
             <a href="/shop" className="navShop">shop</a>

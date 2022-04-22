@@ -11,11 +11,12 @@ const getLeaderboard = async (req, res) => {
   try {
     const docs = await Account.find({ wins: { $gte: 0 } });
 
-    const winsBoard = docs;
-    _.sortBy(winsBoard, (acc) => acc.wins);
+    const winsBoard = JSON.parse(JSON.stringify(docs));
+    //_.sortBy(winsBoard, (acc) => acc.wins).reverse(); // why doesnt this work
+    winsBoard.sort().reverse();
 
-    const topThreesBoard = docs;
-    _.sortBy(topThreesBoard, (acc) => acc.topThrees);
+    const topThreesBoard = JSON.parse(JSON.stringify(docs));
+    _.sortBy(topThreesBoard, (acc) => acc.topThrees).reverse();
 
     return res.status(200).json({ winsBoard, topThreesBoard });
   } catch (err) {
