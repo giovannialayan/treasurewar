@@ -6,6 +6,7 @@ module.exports = {
         shop: ['./client/shop.jsx'],
         login: ['./client/login.jsx'],
         account: ['./client/account.jsx'],
+        leaderboard: ['./client/leaderboard.jsx'],
     },
     module: {
         rules: [

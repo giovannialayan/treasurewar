@@ -44,11 +44,13 @@ let roomId;
 let hardMode = false;
 let leaveButton;
 let skin;
+let name;
 
-const startGame = (room, hard, accSkin) => {
+const startGame = (room, hard, accSkin, username) => {
     roomId = room
     hardMode = hard;
     skin = accSkin;
+    name = username;
     game = new Phaser.Game(config);
     leaveButton = document.querySelector('#leaveRoomButton');
 };
@@ -68,7 +70,7 @@ function preload() {
 
 function create() {
     const scene = this;
-    this.socket = io(`/?room=${roomId}&skin=${skin}`, {autoConnect: false});
+    this.socket = io(`/?room=${roomId}&skin=${skin}&name=${name}`, {autoConnect: false});
     this.socket.open();
 
     leaveButton.addEventListener('click', () => {leaveGame(scene);});
@@ -141,7 +143,7 @@ function create() {
         console.log(players);
         let scoreboard = '';
         players.forEach((player) => {
-            scoreboard += `${player.playerId}: ${player.score}\n`;
+            scoreboard += `${player.name}: ${player.score}\n`;
         });
         scene.playerWinText.setText(scoreboard);
         scene.playerWinText.x = this.player.body.position.x - scene.playerWinText.width / 2;

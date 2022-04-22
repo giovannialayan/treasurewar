@@ -95,7 +95,12 @@ const emitToRoom = (data, room, event) => {
 // on connect event, sets up everything for the player than connected
 io.on('connection', (socket) => {
   // create object for this player
-  gameManager.createPlayer(socket.id, socket.handshake.query.room, socket.handshake.query.skin);
+  gameManager.createPlayer(
+    socket.id,
+    socket.handshake.query.room,
+    socket.handshake.query.skin,
+    socket.handshake.query.name,
+  );
 
   // join the room this player should be in
   socket.join(gameManager.getPlayer(socket.id).room);

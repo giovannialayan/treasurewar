@@ -145,7 +145,7 @@ const start = async (roomId, hard) => {
         const accResponse = await fetch('/getAccount');
         const accData = await accResponse.json();
     
-        game.startGame(roomId, hard, accData.account.equippedSkin);
+        game.startGame(roomId, hard, accData.account.equippedSkin, accData.account.username);
     }
     else {
         getRoomList();

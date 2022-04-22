@@ -108,9 +108,9 @@ const changePassword = async (req, res) => {
   Account.authenticate(req.session.username, currPass, (err, account) => {
     wrongPass = err || !account;
   });
-  
-  if(wrongPass) {
-    return res.status(401).json({error: 'current password is wrong'});
+
+  if (wrongPass) {
+    return res.status(401).json({ error: 'current password is wrong' });
   }
 
   if (newPass !== newPass2) {
@@ -131,21 +131,20 @@ const changePassword = async (req, res) => {
 };
 
 const getAccountInfo = async (req, res) => {
-  try{
+  try {
     const accountInfo = await Account.findOne({ username: req.session.account.username });
-    return res.json({ 
+    return res.json({
       account: {
-        username: accountInfo.username, 
-        gamesPlayed: accountInfo.gamesPlayed, 
-        wins: accountInfo.wins, 
-        _id: accountInfo._id, 
-        skins: accountInfo.skins, 
+        username: accountInfo.username,
+        gamesPlayed: accountInfo.gamesPlayed,
+        wins: accountInfo.wins,
+        _id: accountInfo._id,
+        skins: accountInfo.skins,
         equippedSkin: accountInfo.equippedSkin,
-        topThrees: accountInfo.topThrees
-      }
+        topThrees: accountInfo.topThrees,
+      },
     });
-  }
-  catch(err) {
+  } catch (err) {
     console.log(err);
     return res.status(400).json({ error: 'an error occurred' });
   }

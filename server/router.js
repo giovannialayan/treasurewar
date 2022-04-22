@@ -24,6 +24,8 @@ const router = (app) => {
   app.get('/getShopItems', mid.requiresSecure, mid.requiresLogin, controllers.shop.getShopItems);
   app.post('/buyItem', mid.requiresSecure, mid.requiresLogin, controllers.account.addItemToAccount);
   app.post('/makeShopItem', mid.requiresSecure, mid.requiresLogin, controllers.shop.makeShopItem);
+
+  app.get('/getLeaderboard', mid.requiresSecure, mid.requiresLogin, controllers.leaderboard.getLeaderboard);
 };
 
 module.exports = router;

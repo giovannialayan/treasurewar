@@ -2,6 +2,7 @@ https://newdocs.phaser.io/docs/3.55.2/
 https://photonstorm.github.io/phaser3-docs/
 https://socket.io/docs/v4/
 https://developer.mozilla.org/en-US/docs/Web
+https://mongoosejs.com/docs/api.html
 
 What is the intended purpose of your application?
 it is a game that can be played with multiple people at once where players have to collect treasure from around the map by completing keyboard challenges.

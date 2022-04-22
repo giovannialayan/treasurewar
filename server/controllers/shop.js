@@ -5,7 +5,8 @@ const { ShopItem } = models;
 const shopPage = (req, res) => res.render('shop');
 
 const makeShopItem = async (req, res) => {
-  if (!req.body.name || !req.body.desc || !req.body.img || (!req.body.price && req.body.price !== 0) || !req.body.password) {
+  if (!req.body.name || !req.body.desc || !req.body.img
+    || (!req.body.price && req.body.price !== 0) || !req.body.password) {
     return res.status(400).json({ error: 'name, desc, img, price, and password are required' });
   }
 
@@ -19,7 +20,7 @@ const makeShopItem = async (req, res) => {
     desc: req.body.desc,
     price: req.body.price,
   };
-  
+
   try {
     const newItem = new ShopItem(itemData);
     await newItem.save();

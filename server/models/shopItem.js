@@ -28,13 +28,6 @@ const ShopItemSchema = new mongoose.Schema({
   },
 });
 
-ShopItemSchema.statics.toAPI = (doc) => ({
-  name: doc.name,
-  img: doc.img,
-  desc: doc.desc,
-  price: doc.price,
-});
-
 ShopItemSchema.statics.findByName = (name, callback) => {
   const search = {
     name: mongoose.Types.ObjectId(name),
