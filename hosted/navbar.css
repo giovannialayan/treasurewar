@@ -18,3 +18,8 @@
 .navbar > a:hover {
     background-color: #ff4500;
 }
+
+.navLogout {
+    position: absolute;
+    right: 10px;
+}

@@ -1,5 +1,6 @@
 import * as game from './game.js';
 import * as helper from './helper.js';
+const navbar = require('./navbar.jsx');
 
 const handleRoomSetup = (e) => {
     e.preventDefault();
@@ -10,13 +11,14 @@ const handleRoomSetup = (e) => {
     const time = e.target.querySelector('#time').value;
     const numTreasures = e.target.querySelector('#treasure').value;
     const hardOn = e.target.querySelector('#difficulty').checked;
+    const _csrf = document.querySelector('#_csrf').value;
 
     if(!name || !maxPlayers || !minPlayers || !time || !numTreasures) {
         console.log('all fields required');
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn}, getRoomList);
+    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn, _csrf}, getRoomList);
 
     return false;
 };
@@ -56,6 +58,7 @@ const RoomForm = (props) => {
                 <input id="difficulty" type="checkbox" name="difficulty" className="roomFormHardInput"/>
             </div>
             <input className="roomFormSubmit" type="submit" value="create room" />
+            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
         </form>
     );
 };
@@ -134,12 +137,15 @@ const RoomList = (props) => {
 const start = async (roomId, hard) => {
     const response  = await fetch('/getRooms');
     const data = await response.json();
-    
+
     if(data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers) {
         document.getElementById('gameSetup').classList.add('hidden');
         document.getElementById('roomList').classList.add('hidden');
+
+        const accResponse = await fetch('/getAccount');
+        const accData = await accResponse.json();
     
-        game.startGame(roomId, hard);
+        game.startGame(roomId, hard, accData.account.equippedSkin);
     }
     else {
         getRoomList();
@@ -156,9 +162,12 @@ const getRoomList = async () => {
     );
 };
 
-const init = () => {
+const init = async () => {
+    const response = await fetch('/getToken');
+    const data = await response.json();
+
     ReactDOM.render(
-        <RoomForm/>,
+        <RoomForm csrf={data.csrfToken}/>,
         document.getElementById('gameSetup')
     );
 
@@ -170,6 +179,8 @@ const init = () => {
     getRoomList();
 
     document.querySelector('#leaveRoomButton').addEventListener('click', getRoomList);
+
+    navbar.renderNavbar();
 };
 
 window.onload = init;

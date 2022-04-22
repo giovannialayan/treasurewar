@@ -1,4 +1,5 @@
 const helper = require('./helper.js');
+const navbar = require('./navbar.jsx');
 
 const handleLogin = (e) => {
     e.preventDefault();
@@ -115,6 +116,8 @@ const init = async () => {
     });
 
     ReactDOM.render(<LoginWindow csrf={data.csrfToken}/>, document.getElementById('login'));
+
+    navbar.renderNavbar();
 };
 
 window.onload = init;

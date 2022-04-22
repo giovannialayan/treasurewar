@@ -43,13 +43,14 @@ const timer = (room, callback) => {
 
 const getPlayer = (id) => players[id];
 
-const createPlayer = (id, room) => {
+const createPlayer = (id, room, skin) => {
   players[id] = {
     x: 500,
     y: 500,
     score: 0,
     playerId: id,
     room,
+    skin,
   };
 
   rooms[room].roomPlayers[id] = players[id];

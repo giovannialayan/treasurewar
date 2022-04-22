@@ -1,4 +1,5 @@
 const helper = require('./helper.js');
+const navbar = require('./navbar.jsx');
 
 const AccountInfo = (props) => {
     let skinNodes;
@@ -119,6 +120,8 @@ const init = async () => {
     changePassButton.addEventListener('click', (e) => {
         passChangeDiv.classList.toggle('hidden');
     });
+
+    navbar.renderNavbar();
 };
 
 window.onload = init;

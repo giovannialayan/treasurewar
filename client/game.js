@@ -43,10 +43,12 @@ let game;
 let roomId;
 let hardMode = false;
 let leaveButton;
+let skin;
 
-const startGame = (room, hard) => {
+const startGame = (room, hard, accSkin) => {
     roomId = room
     hardMode = hard;
+    skin = accSkin;
     game = new Phaser.Game(config);
     leaveButton = document.querySelector('#leaveRoomButton');
 };
@@ -55,14 +57,18 @@ function preload() {
     this.load.setBaseURL('');
 
     this.load.image('background', '/assets/img/background.png');
-    this.load.image('player', '/assets/img/robot.png');
     this.load.image('treasure', '/assets/img/treasure-mound.png');
-    this.load.image('amogus', '/assets/img/sus.png');
+    this.load.image('J1m', '/assets/img/robot.png');
+    this.load.image('K3vin', '/assets/img/robot2.png');
+    this.load.image('C4rla', '/assets/img/robot3.png');
+    this.load.image('B3th', '/assets/img/robot4.png');
+    this.load.image('S0nny', '/assets/img/robot5.png');
+    this.load.image('5u5bot', '/assets/img/susbot.png');
 }
 
 function create() {
     const scene = this;
-    this.socket = io(`/?room=${roomId}`, {autoConnect: false});
+    this.socket = io(`/?room=${roomId}&skin=${skin}`, {autoConnect: false});
     this.socket.open();
 
     leaveButton.addEventListener('click', () => {leaveGame(scene);});
@@ -303,7 +309,7 @@ function secToMinSec(secs) {
 }
 
 function addPlayer(scene, playerInfo) {
-    scene.player = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+    scene.player = scene.physics.add.sprite(playerInfo.x, playerInfo.y, playerInfo.skin);
 
     scene.player.setBounce(0);
     scene.player.setCollideWorldBounds(true);
@@ -312,7 +318,7 @@ function addPlayer(scene, playerInfo) {
 }
 
 function addOtherPlayer(scene, playerInfo) {
-    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, 'amogus').setOrigin(0.25);
+    const otherPlayer = scene.physics.add.sprite(playerInfo.x, playerInfo.y, playerInfo.skin).setOrigin(0.25);
     otherPlayer.playerId = playerInfo.playerId;
     otherPlayer.setPosition(playerInfo.x, playerInfo.y);
     scene.otherPlayers.add(otherPlayer);

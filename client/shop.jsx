@@ -1,4 +1,5 @@
 const helper = require('./helper.js');
+const navbar = require('./navbar.jsx');
 
 const Shop = (props) => {
     const itemNodes = props.items.map(item => {
@@ -69,6 +70,8 @@ const init = () => {
     );
 
     getShopItemsFromServer();
+
+    navbar.renderNavbar();
 };
 
 window.onload = init;

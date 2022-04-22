@@ -66,12 +66,13 @@ const equipSkin = async (req, res) => {
   }
 
   try {
-    const changedAccount = await Account.find({ username: req.session.username });
+    const changedAccount = await Account.findOne({ username: req.session.account.username });
     changedAccount.equippedSkin = req.body.name;
     await changedAccount.save();
     req.session.account = Account.toAPI(changedAccount);
     return res.status(201).json({ account: req.session.account });
   } catch (err) {
+    console.log(err);
     return res.status(400).json({ error: 'an error occurred' });
   }
 };
