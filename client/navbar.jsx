@@ -13,11 +13,11 @@ const Navbar = (props) => {
 
 const renderNavbar = () => {
     ReactDOM.render(
-        <Navbar />,
+        <Navbar/>,
         document.getElementById('navbar')
     );
 };
 
 module.exports = {
-    renderNavbar
+    renderNavbar,
 }

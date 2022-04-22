@@ -20,5 +20,15 @@
 }
 
 .itemButton {
-    width: 3em;
+    background-color: #eee;
+    color: #000;
+}
+
+.itemButton:hover {
+    background-color: #edd;
+}
+
+.itemOwnedButton {
+    background-color: #bbb;
+    color: #000;
 }

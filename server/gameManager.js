@@ -19,40 +19,59 @@ const saveDataToAccounts = async (users) => {
     let doc; 
     let doc2; 
     let doc3;
+    let startPos = 0;
 
     switch (users.length) {
       case 1:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
+        doc.gamesPlayed++;
         doc.save();
+
+        startPos = 1;
         break;
 
       case 2:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
+        doc.gamesPlayed++;
         await doc.save();
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
+        doc2.gamesPlayed++;
         await doc2.save();
+
+        startPos = 2
         break;
 
       default:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
+        doc.gamesPlayed++;
         await doc.save();
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
+        doc2.gamesPlayed++;
         await doc2.save();
 
         doc3 = await Account.findOne({ username: users[2].name });
         doc3.topThrees++;
+        doc3.gamesPlayed++;
         await doc3.save();
+
+        startPos = 3;
         break;
+    }
+
+    for(let i = startPos; i < users.length; i++) {
+      const userDoc = await Account.findOne({ username: user[i].name });
+      userDoc.gamesPlayed++;
+      userDoc.save();
     }
   } catch (err) {
     console.log(err);
