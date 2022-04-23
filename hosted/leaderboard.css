@@ -1,0 +1,89 @@
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Bold;
+    src: url(/assets/font/Dosis-Bold.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+button, input {
+    font-family: Dosis-Medium, sans-serif;
+    line-height: 1.25em;
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+.boardButtons {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.boardButtons > button {
+    margin: 10px;
+    background-color: #ff6600;
+    color: #fff;
+    padding: 15px;
+    border: 3px solid #aa2200;
+    font-size: medium;
+    line-height: normal;
+}
+
+.boardButtons > button:hover {
+    background-color: #f0660b;
+}
+
+.boardButtons > button:active {
+    background-color: #c24e00;
+}
+
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+    border-collapse: collapse;
+    margin: auto;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 15px;
+}
+
+td {
+    text-align: center;
+}
+
+tbody > tr:nth-child(odd) {
+    background-color: #ff9000;
+}
+
+tbody > tr:nth-child(even) {
+    background-color: #ffb000;
+}
+
+th {
+    background-color: #b50;
+    color: white;
+    border: 1px solid black;
+    font-family: Dosis-bold;
+    font-weight: normal;
+}
+
+tr:hover {
+    background-color: red;
+}

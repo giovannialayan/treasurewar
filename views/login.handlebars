@@ -6,6 +6,7 @@
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <link rel="stylesheet" type="text/css" href="/assets/navbar.css"/>
+  <link rel="stylesheet" type="text/css" href="/assets/login.css"/>
   <link rel="stylesheet" type="text/css" href="/assets/home.css"/>
 </head>
 <body> 
@@ -15,18 +16,20 @@
     <button id="loginButton">go to login</button>
     <button id="signupButton">go to sign up</button>
   </div>
-  <div id="home">
-    <h3>welcome to treasure war</h3>
-    {{!-- <p>
-      send out your robots to dig up buried treasure in the wasteland. you won't be alone though, plenty of other people will be sending
-      out their robots to compete for the most treasure.
-    </p> --}}
-    <p>how to play:</p>
-    <p>move your robot with the arrow keys</p>
-    <p>move over a treasure mound and press spacebar to start digging it up</p>
-    <p>press the keys as they show up to dig up the treasure</p>
-    <p>in hard mode if you press the wrong key you'll have to start over</p>
-    <p>if multiple people are trying to dig at the same mound only the person who digs it up first will get the treasure</p>
+  <div class="homeContainer">
+    <div id="home">
+      <h3>welcome to treasure war</h3>
+      {{!-- <p>
+        send out your robots to dig up buried treasure in the wasteland. you won't be alone though, plenty of other people will be sending
+        out their robots to compete for the most treasure.
+      </p> --}}
+      <p>how to play:</p>
+      <p>move your robot with the arrow keys</p>
+      <p>move over a treasure mound and press spacebar to start digging it up</p>
+      <p>press the keys as they show up to dig up the treasure</p>
+      <p>in hard mode if you press the wrong key you'll have to start over</p>
+      <p>if multiple people are trying to dig at the same mound only the person who digs it up first will get the treasure</p>
+    </div>
   </div>
   <script src="/assets/loginBundle.js"></script>
 </body>

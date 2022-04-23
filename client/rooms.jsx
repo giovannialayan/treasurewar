@@ -98,6 +98,10 @@ const RoomList = (props) => {
     }
 
     const roomNodes = Object.values(props.rooms).map(room => {
+        if(room.ended) {
+            return;
+        }
+
         return (
             <tr key={room._id} className="room">
                 <td className="roomName">{room.name}</td>
@@ -135,10 +139,10 @@ const RoomList = (props) => {
 };
 
 const start = async (roomId, hard) => {
-    const response  = await fetch('/getRooms');
+    const response  = await fetch('/getRooms'); //change this so the roomid is passed as a param so only the room i want is getted
     const data = await response.json();
 
-    if(data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers) {
+    if(data.roomObject[roomId] && data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers && !data.roomObject[roomId].ended) {
         document.getElementById('gameSetup').classList.add('hidden');
         document.getElementById('roomList').classList.add('hidden');
 

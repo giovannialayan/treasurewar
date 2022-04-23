@@ -1,0 +1,61 @@
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+button, input {
+    font-family: Dosis-Medium, sans-serif;
+    line-height: 1.25em;
+}
+
+.itemsContainer {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.item {
+    background-color: #aaa;
+    width: 30%;
+    margin: 10px 0px 0px 10px;
+    padding: 15px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.itemImg {
+    width: 96px;
+}
+
+.itemButton {
+    background-color: #eee;
+    color: #000;
+    border: 2px solid #333;
+}
+
+.itemButton:hover {
+    background-color: #edd;
+    border: 2px solid #a33;
+}
+
+.itemButton:active {
+    background-color: #ecc;
+    border: 2px solid #733;
+}
+
+.itemOwnedButton {
+    background-color: #dbb;
+    color: #500;
+    border: 2px solid #844;
+}

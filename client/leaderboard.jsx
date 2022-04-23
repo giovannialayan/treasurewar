@@ -2,10 +2,12 @@ const navbar = require('./navbar.jsx');
 
 const Leaderboard = (props) => {
     let userNodes;
+    let rank = 1;
     if(props.sortByWins) {
         userNodes = props.winsBoard.map(user => {
             return (
                <tr key={user._id} className="user">
+                    <td className="rank">{rank++}</td>
                     <td className="username">{user.username}</td>
                     <td className="wins">{user.wins}</td>
                     <td className="topThrees">{user.topThrees}</td>
@@ -17,6 +19,7 @@ const Leaderboard = (props) => {
         userNodes = props.topThreesBoard.map(user => {
             return (
                <tr key={user._id} className="user">
+                    <td className="rank">{rank++}</td>
                     <td className="username">{user.username}</td>
                     <td className="topThrees">{user.topThrees}</td>
                     <td className="wins">{user.wins}</td>
@@ -26,11 +29,14 @@ const Leaderboard = (props) => {
     }
     return (
         <div className="leaderboard">
-            <button className="refreshBoardButton" onClick={() => {loadLeaderboardFromServer(props.sortByWins)}}>refresh leaderboard</button>
-            <button className="sortByButton" onClick={() => toggleSortBy(props.winsBoard, props.topThreesBoard)}>sort by top three finishes</button>
+            <div className="boardButtons">
+                <button className="refreshBoardButton" onClick={() => {loadLeaderboardFromServer(props.sortByWins)}}>refresh leaderboard</button>
+                <button className="sortByButton" onClick={() => toggleSortBy(props.winsBoard, props.topThreesBoard)}>sort by top three finishes</button>
+            </div>
             <table className="roomList">
                 <tbody>
                     <tr>
+                        <th>rank</th>
                         <th>name</th>
                         <th>{props.sortByWins ? 'wins' : 'top three finishes'}</th>
                         <th>{props.sortByWins ? 'top three finishes' : 'wins'}</th>

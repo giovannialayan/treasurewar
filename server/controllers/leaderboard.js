@@ -12,7 +12,7 @@ const getLeaderboard = async (req, res) => {
     const docs = await Account.find({ wins: { $gte: 0 } });
 
     const winsBoard = JSON.parse(JSON.stringify(docs));
-    //_.sortBy(winsBoard, (acc) => acc.wins).reverse(); // why doesnt this work
+    // _.sortBy(winsBoard, (acc) => acc.wins).reverse(); // why doesnt this work
     winsBoard.sort().reverse();
 
     const topThreesBoard = JSON.parse(JSON.stringify(docs));

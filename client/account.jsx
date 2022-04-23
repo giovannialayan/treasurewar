@@ -30,13 +30,15 @@ const AccountInfo = (props) => {
 
     return (
         <div className="account">
-            <p className="username">{props.account.username}</p>
-            <p className="gamesPlayed">games played: {props.account.gamesPlayed}</p>
-            <p className="wins">wins: {props.account.wins}</p>
-            <p className="topThrees">top three finishes: {props.account.topThrees}</p>
-            <p className="winWarning">note: wins and top three finishes are only counted in games where at least 10 players are present when the game ends.</p>
+            <div className="accountInfo">
+                <p className="username">{props.account.username}</p>
+                <p className="wins">wins: {props.account.wins}</p>
+                <p className="topThrees">top three finishes: {props.account.topThrees}</p>
+                <p className="gamesPlayed">games played: {props.account.gamesPlayed}</p>
+                {/* <p className="winWarning">note: wins and top three finishes are only counted in games where at least 10 players are present when the game ends.</p> */}
+            </div>
+            <p className="skinsTitle">your skins</p>
             <div className="skins">
-                your skins
                 {skinNodes}
             </div>
             <button id="changePassButton" className="changePassButton">change your password</button>
@@ -119,6 +121,7 @@ const init = async () => {
     const changePassButton = document.getElementById('changePassButton');
     changePassButton.addEventListener('click', (e) => {
         passChangeDiv.classList.toggle('hidden');
+        window.scrollBy(0, document.body.scrollHeight);
     });
 
     navbar.renderNavbar();

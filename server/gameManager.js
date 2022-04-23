@@ -16,65 +16,50 @@ let roomIds = 0;
 // save win and top three data to database
 const saveDataToAccounts = async (users) => {
   try {
-    let doc; 
-    let doc2; 
+    let doc;
+    let doc2;
     let doc3;
-    let startPos = 0;
 
     switch (users.length) {
       case 1:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
-        doc.gamesPlayed++;
         doc.save();
-
-        startPos = 1;
         break;
 
       case 2:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
-        doc.gamesPlayed++;
         await doc.save();
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
-        doc2.gamesPlayed++;
         await doc2.save();
-
-        startPos = 2
         break;
 
       default:
         doc = await Account.findOne({ username: users[0].name });
         doc.wins++;
         doc.topThrees++;
-        doc.gamesPlayed++;
         await doc.save();
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
-        doc2.gamesPlayed++;
         await doc2.save();
 
         doc3 = await Account.findOne({ username: users[2].name });
         doc3.topThrees++;
-        doc3.gamesPlayed++;
         await doc3.save();
-
-        startPos = 3;
         break;
     }
 
-    for(let i = startPos; i < users.length; i++) {
-      const userDoc = await Account.findOne({ username: user[i].name });
-      userDoc.gamesPlayed++;
-      userDoc.save();
-    }
+    const usernames = users.map((user) => user.name);
+
+    await Account.updateMany({ username: { $in: usernames } }, { $inc: { gamesPlayed: 1 } });
   } catch (err) {
-    console.log(err);
+    console.log(err, 'gameManager ln60');
   }
 };
 
@@ -85,6 +70,8 @@ const endGame = (room, callback) => {
   ), (player) => player.score).reverse();
 
   clearInterval(rooms[room].interval);
+
+  rooms[room].ended = true;
 
   saveDataToAccounts(playersScoreOrder);
 
@@ -204,6 +191,7 @@ const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn
     roomJustMade: true,
     numPlayers: 0,
     roomPlayers: {},
+    ended: false,
   };
 
   rooms[roomIds].treasures = generateTreasures(

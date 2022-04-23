@@ -1,29 +1,40 @@
-#login {
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+button, input {
+    font-family: Dosis-Medium, sans-serif;
+    line-height: 1.25em;
+}
+
+#home {
+    display: inline-flex;
+    flex-flow: column nowrap;
+    align-items: center;
     background-color: #ff9000;
-    width: 50%;
-    margin: auto;
+    padding: 20px;
 }
 
-#loginForm, #signupForm {
+.homeContainer {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
 }
 
-#loginForm > div, #signupForm > div {
-    padding: 15px;
+h2 {
+    margin-top: 0;
 }
 
-#loginForm > input, #signupForm > input {
-    margin: 0px 15px 15px 15px;
-}
-
-#loginButtons {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-}
-
-.hidden {
-    display: none;
+.lastText {
+    margin-bottom: 0;
 }

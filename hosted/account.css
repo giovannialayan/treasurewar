@@ -1,3 +1,111 @@
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+button, input {
+    font-family: Dosis-Medium, sans-serif;
+    line-height: 1.25em;
+}
+
+.account {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.accountInfo {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    background-color: #ff9000;
+    padding: 20px;
+}
+
+.username {
+    margin-top: 0px;
+}
+
+.gamesPlayed {
+    margin-bottom: 0px;
+}
+
+.skins {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: stretch;
+    justify-content: space-around;
+    margin: auto;
+    padding: 0px;
+}
+
+.skin {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-around;
+    width: 30%;
+    padding: 10px;
+    margin: 10px;
+    background-color: #d5d5d5;
+}
+
+button, .formSubmit {
+    background-color: #eee;
+    color: #000;
+    border: 2px solid #333;
+}
+
+button:hover, .formSubmit:hover {
+    background-color: #edd;
+    border: 2px solid #a33;
+}
+
+button:active, .formSubmit:active {
+    background-color: #ecc;
+    border: 2px solid #733;
+}
+
+.equippedSkinButton {
+    background-color: #dbb;
+    color: #500;
+    border: 2px solid #844;
+}
+
+.changePassButton {
+    margin-top: 10px;
+}
+
+#passwordChange {
+    background-color: #ff9000;
+    width: 50%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#passChangeForm {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#passChangeForm > div {
+    padding: 15px;
+}
+
+#passChangeForm > input {
+    margin: 0px 15px 15px 15px;
+}
+
 .hidden {
     display: none;
 }

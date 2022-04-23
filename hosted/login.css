@@ -1,0 +1,47 @@
+#login {
+    background-color: #ff9000;
+    width: 50%;
+    margin: auto;
+}
+
+#loginForm, #signupForm {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#loginForm > div, #signupForm > div {
+    padding: 15px;
+}
+
+#loginForm > input, #signupForm > input {
+    margin: 0px 15px 15px 15px;
+}
+
+#loginButtons {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+button, .formSubmit {
+    background-color: #eee;
+    color: #000;
+    border: 2px solid #333;
+}
+
+button:hover, .formSubmit:hover {
+    background-color: #edd;
+    border: 2px solid #a33;
+}
+
+button:active, .formSubmit:active {
+    background-color: #ecc;
+    border: 2px solid #733;
+}
+
+.hidden {
+    display: none;
+}

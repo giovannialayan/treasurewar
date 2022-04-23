@@ -1,3 +1,22 @@
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+}
+
+button, input {
+    font-family: Dosis-Medium, sans-serif;
+    line-height: 1.25em;
+}
+
 .roomFormTitle {
     margin: auto;
 }
@@ -5,7 +24,7 @@
 .roomFormHard {
     margin: auto;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
 }
 
 .roomFormSubmit {
@@ -80,14 +99,43 @@ tr:hover {
     background-color: red;
 }
 
-.room > button {
-    margin: auto;
-    margin-top: 10px;
-}
-
 #gameContainer {
     margin: auto;
     width: 800px;
+}
+
+.roomFormSubmit, .room > td > button {
+    background-color: #eee;
+    color: #000;
+    border: 2px solid #333;
+}
+
+.roomFormSubmit:hover, .room > td > button:hover {
+    background-color: #edd;
+    border: 2px solid #a33;
+}
+
+.roomFormSubmit:active, .room > td > button:active {
+    background-color: #ecc;
+    border: 2px solid #733;
+}
+
+.refreshRoomsButton {
+    margin: 10px;
+    background-color: #ff6600;
+    color: #fff;
+    padding: 15px;
+    border: 3px solid #aa2200;
+    font-size: medium;
+    line-height: normal;
+}
+
+.refreshRoomsButton:hover {
+    background-color: #f0660b;
+}
+
+.refreshRoomsButton:active {
+    background-color: #c24e00;
 }
 
 .hidden {
