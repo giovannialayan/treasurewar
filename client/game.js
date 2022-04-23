@@ -66,6 +66,8 @@ function preload() {
     this.load.image('B3th', '/assets/img/robot4.png');
     this.load.image('S0nny', '/assets/img/robot5.png');
     this.load.image('5u5bot', '/assets/img/susbot.png');
+    this.load.image('Pr1ck', '/assets/img/cactus.png');
+    this.load.image('P3nny', '/assets/img/penguin.png');
 }
 
 function create() {
@@ -107,6 +109,7 @@ function create() {
         scene.otherPlayers.getChildren().forEach((otherPlayer) => {
             if(playerInfo.playerId === otherPlayer.playerId) {
                 otherPlayer.setPosition(playerInfo.x, playerInfo.y);
+                otherPlayer.flipX = playerInfo.flip;
             }
         });
     });
@@ -215,9 +218,11 @@ function update() {
 
     if(cursors.left.isDown && !challengeActive) {
         this.player.setVelocityX(-playerSpeed);
+        this.player.flipX = true;
     }
     else if(cursors.right.isDown && !challengeActive) {
         this.player.setVelocityX(playerSpeed);
+        this.player.flipX = false;
     }
     else {
         this.player.setVelocityX(0);

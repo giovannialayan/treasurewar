@@ -28,7 +28,7 @@ const router = (app) => {
 
   app.get('/getLeaderboard', mid.requiresSecure, mid.requiresLogin, controllers.leaderboard.getLeaderboard);
 
-  app.get('*', (req, res) => {res.render('notFound')});
+  app.get('*', (req, res) => { res.render('notFound'); });
 };
 
 module.exports = router;

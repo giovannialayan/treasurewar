@@ -1,4 +1,3 @@
-const _ = require('underscore');
 const models = require('../models');
 
 const { Account } = models;
@@ -12,11 +11,10 @@ const getLeaderboard = async (req, res) => {
     const docs = await Account.find({ wins: { $gte: 0 } });
 
     const winsBoard = JSON.parse(JSON.stringify(docs));
-    // _.sortBy(winsBoard, (acc) => acc.wins).reverse(); // why doesnt this work
-    winsBoard.sort().reverse();
+    winsBoard.sort((acc1, acc2) => acc2.wins - acc1.wins);
 
     const topThreesBoard = JSON.parse(JSON.stringify(docs));
-    _.sortBy(topThreesBoard, (acc) => acc.topThrees).reverse();
+    topThreesBoard.sort((acc1, acc2) => acc2.wins - acc1.wins);
 
     return res.status(200).json({ winsBoard, topThreesBoard });
   } catch (err) {

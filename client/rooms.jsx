@@ -66,7 +66,7 @@ const RoomForm = (props) => {
 };
 
 const RoomList = (props) => {
-    if(Object.keys(props.rooms).length === 0) {
+    if(Object.keys(props.rooms).length === 0 || Object.values(props.rooms).filter(room => {return !room.ended}).length === 0) {
         return (
             <div className="roomListContainer">
                 <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
@@ -100,10 +100,6 @@ const RoomList = (props) => {
     }
 
     const roomNodes = Object.values(props.rooms).map(room => {
-        if(room.ended) {
-            return;
-        }
-
         return (
             <tr key={room._id} className="room">
                 <td className="roomName">{room.name}</td>
@@ -144,7 +140,7 @@ const start = async (roomId, hard) => {
     const response  = await fetch('/getRooms'); //change this so the roomid is passed as a param so only the room i want is getted
     const data = await response.json();
 
-    if(data.roomObject[roomId] && data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers && !data.roomObject[roomId].ended) {
+    if(!data.roomObject[roomId].ended && data.roomObject[roomId].currentPlayers < data.roomObject[roomId].maxPlayers && !data.roomObject[roomId].ended) {
         document.getElementById('gameSetup').classList.add('hidden');
         document.getElementById('roomList').classList.add('hidden');
 

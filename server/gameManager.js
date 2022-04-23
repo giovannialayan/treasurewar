@@ -99,6 +99,7 @@ const createPlayer = (id, room, skin, name) => {
     room,
     skin,
     name,
+    flip: false,
   };
 
   rooms[room].roomPlayers[id] = players[id];
@@ -129,6 +130,8 @@ const disconnectPlayer = (id, callback) => {
 };
 
 const changePlayerPosition = (id, movementData) => {
+  players[id].flip = movementData.x < players[id].x;
+
   players[id].x = movementData.x;
   players[id].y = movementData.y;
 };
@@ -214,6 +217,7 @@ const getRoomObj = () => {
       numTreasures: rooms[roomList[i]].numTreasures,
       _id: rooms[roomList[i]]._id,
       currentPlayers: rooms[roomList[i]].numPlayers,
+      ended: rooms[roomList[i]].ended,
     };
   }
 
