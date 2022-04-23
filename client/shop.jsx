@@ -26,6 +26,7 @@ const Shop = (props) => {
         <div className="itemsContainer">
             {itemNodes}
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
+            <p id="shopErrorText"></p>
         </div>
     );
 };
@@ -44,7 +45,7 @@ const checkItemOwned = (itemsOwned, item) => {
 //make post request to add item to this account's skins list
 const buyItem = async (itemName) => {
     const _csrf = document.getElementById('_csrf').value;
-    helper.sendPost('/buyItem', {name: itemName, _csrf}, getShopItemsFromServer);
+    helper.sendPost('/buyItem', {name: itemName, _csrf}, document.getElementById('shopErrorText'), getShopItemsFromServer);
 };
 
 const getShopItemsFromServer = async () => {

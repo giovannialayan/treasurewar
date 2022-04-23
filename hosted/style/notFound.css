@@ -1,0 +1,35 @@
+@font-face {
+    font-family: Dosis;
+    src: url(/assets/font/Dosis-Regular.ttf);
+}
+
+@font-face {
+    font-family: Dosis-Medium;
+    src: url(/assets/font/Dosis-Medium.ttf);
+}
+
+body {
+    font-family: Dosis, sans-serif;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.notFound {
+    text-align: center;
+}
+
+.notFound > p {
+    font-size: .75em;
+}
+
+a {
+    padding: 15px;
+    background-color: #ff6000;
+    text-decoration: none;
+    color: #fff;
+}
+
+a:hover {
+    background-color: #ff4500;
+}

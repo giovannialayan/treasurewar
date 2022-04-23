@@ -38,6 +38,11 @@ button, input {
     row-gap: 10px;
 }
 
+.roomForm > p {
+    text-align: center;
+    margin: auto;
+}
+
 /* .roomForm > div > input {
     background-color: yellow;
 } */

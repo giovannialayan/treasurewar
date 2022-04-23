@@ -109,10 +109,11 @@ const changePassword = async (req, res) => {
   }
 
   let wrongPass = false;
-  Account.authenticate(req.session.username, currPass, (err, account) => {
+  await Account.authenticate(req.session.account.username, currPass, (err, account) => {
     wrongPass = err || !account;
   });
 
+  console.log(wrongPass);
   if (wrongPass) {
     return res.status(401).json({ error: 'current password is wrong' });
   }

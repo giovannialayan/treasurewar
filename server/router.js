@@ -27,6 +27,8 @@ const router = (app) => {
   app.post('/makeShopItem', mid.requiresSecure, mid.requiresLogin, controllers.shop.makeShopItem);
 
   app.get('/getLeaderboard', mid.requiresSecure, mid.requiresLogin, controllers.leaderboard.getLeaderboard);
+
+  app.get('*', (req, res) => {res.render('notFound')});
 };
 
 module.exports = router;

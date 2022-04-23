@@ -14,11 +14,12 @@ const handleRoomSetup = (e) => {
     const _csrf = document.querySelector('#_csrf').value;
 
     if(!name || !maxPlayers || !minPlayers || !time || !numTreasures) {
-        console.log('all fields required');
+        //console.log('all fields required');
+        document.getElementById('roomErrorText').innerText = 'all fields required';
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn, _csrf}, getRoomList);
+    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn, _csrf}, document.getElementById('roomErrorText'), getRoomList);
 
     return false;
 };
@@ -59,6 +60,7 @@ const RoomForm = (props) => {
             </div>
             <input className="roomFormSubmit" type="submit" value="create room" />
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
+            <p id="roomErrorText"></p>
         </form>
     );
 };

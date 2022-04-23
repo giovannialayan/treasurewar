@@ -1,5 +1,4 @@
 const helper = require('./helper.js');
-const navbar = require('./navbar.jsx');
 
 const handleLogin = (e) => {
     e.preventDefault();
@@ -9,11 +8,12 @@ const handleLogin = (e) => {
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if(!username || !pass) {
-        console.log('username or password is empty');
+        //console.log('username or password is empty');
+        document.getElementById('loginErrorText').innerText = 'username or password is empty';
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, _csrf});
+    helper.sendPost(e.target.action, {username, pass, _csrf}, document.getElementById('loginErrorText'));
 
     return false;
 };
@@ -27,16 +27,18 @@ const handleSignup = (e) => {
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if(!username || !pass || !pass2) {
-        console.log('all fields are required');
+        //console.log('all fields are required');
+        document.getElementById('signupErrorText').innerText = 'all fields are required';
         return false;
     }
 
     if(pass !== pass2) {
-        console.log('passwords do not match');
+        //console.log('passwords do not match');
+        document.getElementById('signupErrorText').innerText = 'passwords do not match';
         return false;
     }
 
-    helper.sendPost(e.target.action, {username, pass, pass2, _csrf});
+    helper.sendPost(e.target.action, {username, pass, pass2, _csrf}, document.getElementById('signupErrorText'));
 
     return false;
 };
@@ -60,6 +62,7 @@ const LoginWindow = (props) => {
             </div>
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="sign in" />
+            <p id="loginErrorText"></p>
         </form>
     );
 };
@@ -82,11 +85,12 @@ const SignupWindow = (props) => {
                 <input id="pass" type="password" name="pass" placeholder="password" />
             </div>
             <div className='signupPass2'>
-                <label htmlFor="pass2">password: </label>
+                <label htmlFor="pass2">password part 2: </label>
                 <input id="pass2" type="password" name="pass2" placeholder="retype password" />
             </div>
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
             <input className="formSubmit" type="submit" value="sign up" />
+            <p id="signupErrorText"></p>
         </form>
     );
 };

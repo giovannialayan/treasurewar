@@ -38,6 +38,7 @@ const AccountInfo = (props) => {
                 {/* <p className="winWarning">note: wins and top three finishes are only counted in games where at least 10 players are present when the game ends.</p> */}
             </div>
             <p className="skinsTitle">your skins</p>
+            <p id="skinsErrorText"></p>
             <div className="skins">
                 {skinNodes}
             </div>
@@ -69,6 +70,7 @@ const PasswordChange = (props) => {
                 <input id="newPass2" type="password" name="newPass2" placeholder="retype new password" />
             </div>
             <input className="formSubmit" type="submit" value="change password" />
+            <p id="passChangeErrorText"></p>
         </form>
     );
 };
@@ -82,18 +84,19 @@ const handlePassChange = (e) => {
     const _csrf = document.querySelector('#_csrf').value;
 
     if(!currPass || !newPass || !newPass2) {
-        console.log('username or password is empty');
+        //console.log('one or more fields are empty');
+        document.getElementById('passChangeErrorText').innerText = 'one or more fields are empty';
         return false;
     }
 
-    helper.sendPost(e.target.action, {currPass, newPass, newPass2, _csrf});
+    helper.sendPost(e.target.action, {currPass, newPass, newPass2, _csrf}, document.getElementById('passChangeErrorText'));
 
     return false;
 };
 
 const equipSkin = async (skinName) => {
     const _csrf = document.getElementById('_csrf').value;
-    helper.sendPost('/equipSkin', {name: skinName, _csrf}, loadAccountFromServer);
+    helper.sendPost('/equipSkin', {name: skinName, _csrf}, document.getElementById('skinsErrorText'), loadAccountFromServer);
 };
 
 const loadAccountFromServer = async () => {

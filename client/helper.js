@@ -1,5 +1,5 @@
-const sendPost = async (url, data, handler) => {
-    console.log(data);
+const sendPost = async (url, data, errorDisplay, handler) => {
+    //console.log(data);
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -15,7 +15,8 @@ const sendPost = async (url, data, handler) => {
     }
   
     if(result.error) {
-      console.log(result.error);
+      //console.log(result.error);
+      errorDisplay.innerText = result.error;
     }
 
     if(handler) {
