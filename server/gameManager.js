@@ -218,6 +218,7 @@ const getRoomObj = () => {
       _id: rooms[roomList[i]]._id,
       currentPlayers: rooms[roomList[i]].numPlayers,
       ended: rooms[roomList[i]].ended,
+      hard: rooms[roomList[i]].hard,
     };
   }
 
