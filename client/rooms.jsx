@@ -100,6 +100,9 @@ const RoomList = (props) => {
     }
 
     const roomNodes = Object.values(props.rooms).map(room => {
+        if(room.ended) {
+            return;
+        }
         return (
             <tr key={room._id} className="room">
                 <td className="roomName">{room.name}</td>

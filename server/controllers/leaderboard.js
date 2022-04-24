@@ -14,7 +14,7 @@ const getLeaderboard = async (req, res) => {
     winsBoard.sort((acc1, acc2) => acc2.wins - acc1.wins);
 
     const topThreesBoard = JSON.parse(JSON.stringify(docs));
-    topThreesBoard.sort((acc1, acc2) => acc2.wins - acc1.wins);
+    topThreesBoard.sort((acc1, acc2) => acc2.topThrees - acc1.topThrees);
 
     return res.status(200).json({ winsBoard, topThreesBoard });
   } catch (err) {

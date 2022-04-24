@@ -104,23 +104,18 @@ tr:hover {
     background-color: red;
 }
 
-#gameContainer {
-    margin: auto;
-    width: 800px;
-}
-
-.roomFormSubmit, .room > td > button {
+.roomFormSubmit, .room > td > button, #leaveRoomButton  {
     background-color: #eee;
     color: #000;
     border: 2px solid #333;
 }
 
-.roomFormSubmit:hover, .room > td > button:hover {
+.roomFormSubmit:hover, .room > td > button:hover, #leaveRoomButton:hover {
     background-color: #edd;
     border: 2px solid #a33;
 }
 
-.roomFormSubmit:active, .room > td > button:active {
+.roomFormSubmit:active, .room > td > button:active, #leaveRoomButton:active {
     background-color: #ecc;
     border: 2px solid #733;
 }
@@ -141,6 +136,21 @@ tr:hover {
 
 .refreshRoomsButton:active {
     background-color: #c24e00;
+}
+
+#game {
+    margin: auto;
+    width: 800px;
+}
+
+.gameContainer {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#leaveRoomButton {
+    margin-top: 40px;
 }
 
 .hidden {

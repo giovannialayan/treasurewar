@@ -59,18 +59,18 @@ button, input {
     background-color: #d5d5d5;
 }
 
-button, .formSubmit {
+.equipSkinButton, .changePassButton, .formSubmit {
     background-color: #eee;
     color: #000;
     border: 2px solid #333;
 }
 
-button:hover, .formSubmit:hover {
+.equipSkinButton:hover, .changePassButton:hover, .formSubmit:hover {
     background-color: #edd;
     border: 2px solid #a33;
 }
 
-button:active, .formSubmit:active {
+.equipSkinButton:active, .changePassButton:active, .formSubmit:active {
     background-color: #ecc;
     border: 2px solid #733;
 }

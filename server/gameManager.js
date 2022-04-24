@@ -64,6 +64,7 @@ const saveDataToAccounts = async (users) => {
 };
 
 // end the game for a room and emit the players in the room in order of their score
+// todo: account for ties
 const endGame = (room, callback) => {
   const playersScoreOrder = _.sortBy(Object.values(
     rooms[room].roomPlayers,

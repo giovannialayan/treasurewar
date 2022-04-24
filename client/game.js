@@ -8,7 +8,7 @@ const worldHeight = 1000;
 
 let config = {
     type: Phaser.AUTO,
-    parent: 'gameContainer',
+    parent: 'game',
     width: gameWidth,
     height: gameHeight,
     physics: {
@@ -143,7 +143,7 @@ function create() {
     this.gameOver = false;
 
     this.socket.on('playerWon', (players) => {
-        console.log(players);
+        //console.log(players);
         let scoreboard = '';
         players.forEach((player) => {
             scoreboard += `${player.name}: ${player.score}\n`;
