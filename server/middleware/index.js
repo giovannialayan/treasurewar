@@ -1,3 +1,5 @@
+const admins = ['gio'];
+
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
     return res.redirect('/');
@@ -23,7 +25,7 @@ const requiresAdmin = (req, res, next) => {
   if (!req.session.account) {
     return res.status(400).json({ error: 'logging into an admin account is required for this request' });
   }
-  if (req.session.account.username !== 'gio') {
+  if (!admins.includes(req.session.account.username)) {
     return res.status(400).json({ error: 'an admin account is required for this request' });
   }
 
