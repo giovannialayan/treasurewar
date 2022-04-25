@@ -12,7 +12,7 @@ body {
     font-family: Dosis, sans-serif;
 }
 
-button, input {
+button, input, select {
     font-family: Dosis-Medium, sans-serif;
     line-height: 1.25em;
 }
@@ -43,9 +43,9 @@ button, input {
     margin: auto;
 }
 
-/* .roomForm > div > input {
-    background-color: yellow;
-} */
+.roomFormSize {
+    margin: auto;
+}
 
 #gameSetup {
     width: 30%;

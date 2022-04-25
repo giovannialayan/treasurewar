@@ -12,6 +12,7 @@ const handleRoomSetup = (e) => {
     const time = e.target.querySelector('#time').value;
     const numTreasures = e.target.querySelector('#treasure').value;
     const hardOn = e.target.querySelector('#difficulty').checked;
+    const size = e.target.querySelector('#size').value;
     const _csrf = document.querySelector('#_csrf').value;
 
     if(!name || !maxPlayers || !minPlayers || !time || !numTreasures) {
@@ -20,7 +21,7 @@ const handleRoomSetup = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn, _csrf}, document.getElementById('roomErrorText'), getRoomList);
+    helper.sendPost(e.target.action, {name, maxPlayers, minPlayers, time, numTreasures, hardOn, size, _csrf}, document.getElementById('roomErrorText'), getRoomList);
 
     return false;
 };
@@ -55,6 +56,15 @@ const RoomForm = (props) => {
                 <label htmlFor="treasure" className="roomFormTreasureLabel">amount of treasure: </label>
                 <input id="treasure" type="number" min="1" name="treasure" placeholder="10" className="roomFormTreasureInput"/>
             </div>
+            <div className="roomFormSize">
+                <label htmlFor="size" className="roomFormSizeLabel">map size: </label>
+                <select id="size" name="treasure" className="roomFormSizeInput" defaultValue="medium">
+                    <option value="small">small</option>
+                    <option value="medium">medium</option>
+                    <option value="large">large</option>
+                    <option value="huge">huge</option>
+                </select>
+            </div>
             <div className="roomFormHard">
                 <label htmlFor="difficulty" className="roomFormHardLabel">hard mode on: </label>
                 <input id="difficulty" type="checkbox" name="difficulty" className="roomFormHardInput"/>
@@ -72,30 +82,6 @@ const RoomList = (props) => {
             <div className="roomListContainer">
                 <button id="refreshRooms" className="refreshRoomsButton" type="button" onClick={getRoomList}>refresh rooms</button>
                 <h3 className="emptyRoomList"> no rooms yet</h3>
-                {/* <table className="roomList">
-                    <tbody>
-                    <tr>
-                        <th>name</th>
-                        <th>max players</th>
-                        <th>min players to start</th>
-                        <th>time</th>
-                        <th>amount of treasure</th>
-                        <th>hard mode on</th>
-                        <th>players in the room</th>
-                        <th></th>
-                    </tr>
-                    <tr key={0} className="room">
-                        <td className="roomName">example room for styling</td>
-                        <td className="roomMax">10</td>
-                        <td className="roomMin">2</td>
-                        <td className="roomTime">4:00</td>
-                        <td className="roomTreasures">10</td>
-                        <td className="roomDifficulty">no</td>
-                        <td className="roomPlayers">0</td>
-                        <td><button id="joinRoom" className="joinRoomButton" type="button">join</button></td>
-                    </tr>
-                    </tbody>
-                </table> */}
             </div>
         );
     }
@@ -111,9 +97,10 @@ const RoomList = (props) => {
                 <td className="roomMin">{room.minPlayers}</td>
                 <td className="roomTime">{room.time + ':00'}</td>
                 <td className="roomTreasures">{room.numTreasures}</td>
+                <td className="roomSize">{room.size}</td>
                 <td className="roomDifficulty">{room.hard ? 'yes' : 'no'}</td>
                 <td className="roomPlayers">{room.currentPlayers}</td>
-                <td><button id="joinRoom" className="joinRoomButton" type="button" onClick={() => start(room._id, room.hard)}>join</button></td>
+                <td><button id="joinRoom" className="joinRoomButton" type="button" onClick={() => start(room._id, room.hard, room.size, room.worldDims)}>join</button></td>
             </tr>
         );
     });
@@ -129,6 +116,7 @@ const RoomList = (props) => {
                         <th>min players to start</th>
                         <th>time</th>
                         <th>amount of treasure</th>
+                        <th>map size</th>
                         <th>hard mode on</th>
                         <th>players in the room</th>
                         <th></th>
@@ -140,7 +128,7 @@ const RoomList = (props) => {
     );
 };
 
-const start = async (roomId, hard) => {
+const start = async (roomId, hard, size, worldDims) => {
     const response  = await fetch('/getRooms'); //change this so the roomid is passed as a param so only the room i want is getted
     const data = await response.json();
 
@@ -151,7 +139,7 @@ const start = async (roomId, hard) => {
         const accResponse = await fetch('/getAccount');
         const accData = await accResponse.json();
     
-        game.startGame(roomId, hard, accData.account.equippedSkin, accData.account.username);
+        game.startGame(roomId, hard, size, worldDims, accData.account.equippedSkin, accData.account.username);
     }
     else {
         getRoomList();

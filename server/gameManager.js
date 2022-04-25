@@ -4,7 +4,6 @@ const models = require('./models');
 const { Account } = models;
 
 const letters = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
-const worldDims = { width: 1000, height: 1000 };
 const treasureDims = { width: 32, height: 32 };
 const minChallengeLen = 5;
 const maxChallengeLen = 8;
@@ -93,8 +92,8 @@ const getPlayer = (id) => players[id];
 
 const createPlayer = (id, room, skin, name) => {
   players[id] = {
-    x: 500,
-    y: 500,
+    x: rooms[room].worldDims.width / 2,
+    y: rooms[room].worldDims.height / 2,
     score: 0,
     playerId: id,
     room,
@@ -161,18 +160,20 @@ const createChallenge = (minLen, maxLen) => {
 };
 
 // generate position, challenge, and id for a given number of treasures
-const generateTreasures = (num, challMin, challMax) => {
+const generateTreasures = (num, challMin, challMax, roomId) => {
   const genTreasures = [];
 
   for (let i = 0; i < num; i++) {
     genTreasures.push({ x: 0, y: 0, challenge: [] });
     genTreasures[i].x = getRandomInt(
       treasureDims.width / 2,
-      worldDims.width - treasureDims.width / 2,
+      // worldDims.width - treasureDims.width / 2,
+      rooms[roomId].worldDims.width - treasureDims.width / 2,
     );
     genTreasures[i].y = getRandomInt(
       treasureDims.height / 2,
-      worldDims.height - treasureDims.height / 2,
+      // worldDims.height - treasureDims.height / 2,
+      rooms[roomId].worldDims.height - treasureDims.width / 2,
     );
     genTreasures[i].challenge = createChallenge(challMin, challMax);
     genTreasures[i]._id = i;
@@ -181,7 +182,7 @@ const generateTreasures = (num, challMin, challMax) => {
   return genTreasures;
 };
 
-const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn) => {
+const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn, size) => {
   roomIds++;
   rooms[roomIds] = {
     name,
@@ -191,6 +192,8 @@ const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn
     startTime: time,
     numTreasures,
     hard: hardOn,
+    size,
+    worldDims: {},
     _id: roomIds,
     roomJustMade: true,
     numPlayers: 0,
@@ -198,10 +201,34 @@ const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn
     ended: false,
   };
 
+  switch (size) {
+    case 'small':
+      rooms[roomIds].worldDims = { width: 600, height: 600 };
+      break;
+
+    case 'medium':
+      rooms[roomIds].worldDims = { width: 1000, height: 1000 };
+      break;
+
+    case 'large':
+      rooms[roomIds].worldDims = { width: 1600, height: 1600 };
+      break;
+
+    case 'huge':
+      rooms[roomIds].worldDims = { width: 2400, height: 2400 };
+      break;
+
+    default:
+      rooms[roomIds].worldDims = { width: 1000, height: 1000 };
+      console.log('default occurred in createRoom, gameManager line 224');
+      break;
+  }
+
   rooms[roomIds].treasures = generateTreasures(
     rooms[roomIds].numTreasures,
     minChallengeLen,
     maxChallengeLen,
+    roomIds,
   );
 };
 
@@ -220,6 +247,8 @@ const getRoomObj = () => {
       currentPlayers: rooms[roomList[i]].numPlayers,
       ended: rooms[roomList[i]].ended,
       hard: rooms[roomList[i]].hard,
+      size: rooms[roomList[i]].size,
+      worldDims: rooms[roomList[i]].worldDims,
     };
   }
 

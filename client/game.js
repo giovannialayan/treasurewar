@@ -3,8 +3,8 @@
 const gameWidth = 800;
 const gameHeight = 600;
 
-const worldWidth = 1000;
-const worldHeight = 1000;
+let worldWidth = 1000;
+let worldHeight = 1000;
 
 let config = {
     type: Phaser.AUTO,
@@ -38,17 +38,20 @@ let challengeActive;
 let currentChallengeTreasure;
 let currentKeyIndex;
 let challengeText;
-let dt = 1/60;
 let game;
 let roomId;
 let hardMode = false;
 let leaveButton;
 let skin;
 let name;
+let mapSize;
 
-const startGame = (room, hard, accSkin, username) => {
+const startGame = (room, hard, size, worldDims, accSkin, username) => {
     roomId = room
     hardMode = hard;
+    worldWidth = worldDims.width;
+    worldHeight = worldDims.height;
+    mapSize = size;
     skin = accSkin;
     name = username;
     game = new Phaser.Game(config);
@@ -58,7 +61,7 @@ const startGame = (room, hard, accSkin, username) => {
 function preload() {
     this.load.setBaseURL('');
 
-    this.load.image('background', '/assets/img/background.png');
+    this.load.image('background', `/assets/img/background_${mapSize}.png`);
     this.load.image('treasure', '/assets/img/treasure-mound.png');
     this.load.image('J1m', '/assets/img/robot.png');
     this.load.image('K3vin', '/assets/img/robot2.png');
@@ -161,7 +164,7 @@ function create() {
         this.gameStarted = start;
     });
 
-    this.add.image(500, 500, 'background');
+    this.add.image(worldWidth / 2, worldHeight / 2, 'background');
 
     this.cameras.main.setBackgroundColor('#863b00');
 
@@ -169,13 +172,13 @@ function create() {
 
     score = 0;
 
-    scoreText = this.add.text(150, 245, score, {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
+    scoreText = this.add.text(worldWidth / (20 / 3), worldHeight / 4.0816, score, {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
     scoreText.setDepth(1);
 
-    gameTimerText = this.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
+    gameTimerText = this.add.text(worldWidth / 2, worldHeight / 4.0816, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
     gameTimerText.setDepth(1);
 
-    challengeText = this.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center', fontFamily: 'Dosis, Arial, sans-serif'});
+    challengeText = this.add.text(worldWidth / 1.8796, worldHeight / (5 / 3), '', {fontSize: '40px', fill: '#000', align: 'center', fontFamily: 'Dosis, Arial, sans-serif'});
     challengeText.setDepth(1);
 
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
