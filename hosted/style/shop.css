@@ -27,14 +27,14 @@ button, input {
     display: flex;
     flex-flow: row wrap;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: center;
     width: 65%;
 }
 
 .item {
     background-color: #aaa;
-    width: 45%;
-    margin: 10px 0px;
+    width: 40%;
+    margin: 10px 2.5%;
     padding: 15px;
 
     display: flex;

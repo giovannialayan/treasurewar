@@ -19,12 +19,24 @@ const requiresSecure = (req, res, next) => {
   return next();
 };
 
+const requiresAdmin = (req, res, next) => {
+  if (!req.session.account) {
+    return res.status(400).json({ error: 'logging into an admin account is required for this request' });
+  }
+  if (req.session.account.username !== 'gio') {
+    return res.status(400).json({ error: 'an admin account is required for this request' });
+  }
+
+  return next();
+};
+
 const bypassSecure = (req, res, next) => {
   next();
 };
 
 module.exports.requiresLogin = requiresLogin;
 module.exports.requiresLogout = requiresLogout;
+module.exports.requiresAdmin = requiresAdmin;
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.requiresSecure = requiresSecure;
