@@ -4,6 +4,9 @@ https://socket.io/docs/v4/
 https://developer.mozilla.org/en-US/docs/Web
 https://mongoosejs.com/docs/api.html
 
+https://stackoverflow.com/questions/63875088/why-is-my-resource-getting-blocked-even-though-i-allowed-it-specifically-in-the
+https://stackoverflow.com/questions/59484216/refused-to-load-the-image-blob-because-it-violates-the-following-content-s
+
 What is the intended purpose of your application?
 it is a game that can be played with multiple people at once where players have to collect treasure from around the map by completing keyboard challenges.
 

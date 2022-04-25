@@ -2,21 +2,26 @@ const models = require('../models');
 
 const { Account, ShopItem } = models;
 
+// render account page
 const accountPage = (req, res) => res.render('account');
 
+// render login page
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+// render home page
 const homePage = (req, res) => {
   res.render('home');
 };
 
+// log out logged in user
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// check if username and password match user and log user in
 const login = (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -36,6 +41,8 @@ const login = (req, res) => {
   });
 };
 
+// check if username is already in use and if passwords match
+// add new user to database and log user in
 const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -64,9 +71,10 @@ const signup = async (req, res) => {
   }
 };
 
+// set equipped skin of user
 const equipSkin = async (req, res) => {
   if (!req.body.name) {
-    return res.status(400).json({ error: 'skin name required' });
+    return res.status(400).json({ error: 'error: skin name required' });
   }
 
   try {
@@ -81,6 +89,7 @@ const equipSkin = async (req, res) => {
   }
 };
 
+// add a shop item to the user's account
 const addItemToAccount = async (req, res) => {
   if (!req.body.name) {
     return res.status(400).json({ error: 'item name required' });
@@ -99,6 +108,8 @@ const addItemToAccount = async (req, res) => {
   }
 };
 
+// check if current password matches user's password and if new passwords match
+// change user's password to new password
 const changePassword = async (req, res) => {
   const currPass = `${req.body.currPass}`;
   const newPass = `${req.body.newPass}`;
@@ -135,6 +146,7 @@ const changePassword = async (req, res) => {
   }
 };
 
+// get user's account info that client needs
 const getAccountInfo = async (req, res) => {
   try {
     const accountInfo = await Account.findOne({ username: req.session.account.username });
@@ -155,6 +167,7 @@ const getAccountInfo = async (req, res) => {
   }
 };
 
+// get token
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
 module.exports = {

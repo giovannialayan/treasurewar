@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
-// const helmet = require('helmet');
+const helmet = require('helmet');
 const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -39,15 +39,15 @@ const io = socketIO(server, {
   pingTimeout: 60000,
 });
 
-// app.use(helmet({
-//   contentSecurityPolicy: {
-//     directives: {
-//       "script-src": ["'self'"],
-//       "img-src": ["'self'"]
-//     }
-//   }
-// }));
-// app.use(helmet());
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      'script-src': ["'self'", 'unpkg.com', 'cdn.jsdelivr.net'],
+      'img-src': ["'self'", 'blob:', 'data:'],
+    },
+  },
+}));
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
 app.use(compression());
@@ -88,6 +88,7 @@ server.listen(config.connections.http.port, () => {
   console.log(`listening on port ${config.connections.http.port}`);
 });
 
+// emit to a room that is used as a callback in gameManager
 const emitToRoom = (data, room, event) => {
   io.to(room).emit(event, data);
 };

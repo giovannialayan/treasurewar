@@ -35,6 +35,9 @@ const saveDataToAccounts = async (users) => {
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
+        if (users[0].score === users[1].score) {
+          doc2.wins++;
+        }
         await doc2.save();
         break;
 
@@ -46,10 +49,16 @@ const saveDataToAccounts = async (users) => {
 
         doc2 = await Account.findOne({ username: users[1].name });
         doc2.topThrees++;
+        if (users[0].score === users[1].score) {
+          doc2.wins++;
+        }
         await doc2.save();
 
         doc3 = await Account.findOne({ username: users[2].name });
         doc3.topThrees++;
+        if (users[0].score === users[2].score) {
+          doc3.wins++;
+        }
         await doc3.save();
         break;
     }
@@ -58,12 +67,11 @@ const saveDataToAccounts = async (users) => {
 
     await Account.updateMany({ username: { $in: usernames } }, { $inc: { gamesPlayed: 1 } });
   } catch (err) {
-    console.log(err, 'gameManager ln60');
+    console.log(err, 'gameManager ln70');
   }
 };
 
 // end the game for a room and emit the players in the room in order of their score
-// todo: account for ties
 const endGame = (room, callback) => {
   const playersScoreOrder = _.sortBy(Object.values(
     rooms[room].roomPlayers,
@@ -88,8 +96,10 @@ const timer = (room, callback) => {
   }
 };
 
+// get player object by player id
 const getPlayer = (id) => players[id];
 
+// create new player and add them to the room
 const createPlayer = (id, room, skin, name) => {
   players[id] = {
     x: rooms[room].worldDims.width / 2,
@@ -105,14 +115,18 @@ const createPlayer = (id, room, skin, name) => {
   rooms[room].roomPlayers[id] = players[id];
 };
 
+// get room object by room id
 const getRoom = (id) => rooms[id];
 
+// get room object by player id
 const getRoomByPlayer = (id) => rooms[players[id].room];
 
+// change number of players in a room
 const changeNumPlayerOfRoom = (id, num) => {
   rooms[id].numPlayers = num;
 };
 
+// remove player from room and player objects and destroy the room if there are no players left
 const disconnectPlayer = (id, callback) => {
   delete rooms[players[id].room].roomPlayers[id];
   rooms[players[id].room].numPlayers--;
@@ -129,6 +143,7 @@ const disconnectPlayer = (id, callback) => {
   callback(id, roomNum, 'playerDisconnected');
 };
 
+// change player positions and set player orientation based on last position
 const changePlayerPosition = (id, movementData) => {
   players[id].flip = movementData.x < players[id].x;
 
@@ -136,6 +151,7 @@ const changePlayerPosition = (id, movementData) => {
   players[id].y = movementData.y;
 };
 
+// remove treasure from room and add to player score
 const collectTreasure = (id, treasureData) => {
   rooms[players[id].room].treasures
     .splice(rooms[players[id].room].treasures.findIndex(
@@ -182,6 +198,7 @@ const generateTreasures = (num, challMin, challMax, roomId) => {
   return genTreasures;
 };
 
+// create new room object with new room id and generate the treasures for it
 const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn, size) => {
   roomIds++;
   rooms[roomIds] = {
@@ -232,6 +249,7 @@ const createRoom = (name, maxRoomPlayers, minPlayers, time, numTreasures, hardOn
   );
 };
 
+// get all current rooms with only information that the client needs
 const getRoomObj = () => {
   const roomList = Object.keys(rooms);
   const roomObj = {};

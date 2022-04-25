@@ -1,7 +1,9 @@
 const gameManager = require('../gameManager.js');
 
+// render game page
 const gamePage = (req, res) => res.render('game');
 
+// create a new room
 const makeRoom = (req, res) => {
   if (!req.body.name || !req.body.maxPlayers || !req.body.minPlayers
     || !req.body.time || !req.body.numTreasures || !req.body.size) {
@@ -21,6 +23,7 @@ const makeRoom = (req, res) => {
   return res.status(201).json({ roomId });
 };
 
+// get all the current rooms
 const getRooms = (req, res) => {
   res.json({ roomObject: gameManager.getRoomObj() });
 };

@@ -2,8 +2,10 @@ const models = require('../models');
 
 const { ShopItem } = models;
 
+// render shop page
 const shopPage = (req, res) => res.render('shop');
 
+// create a new shop item
 const makeShopItem = async (req, res) => {
   if (!req.body.name || !req.body.desc || !req.body.img
     || (!req.body.price && req.body.price !== 0) || !req.body.password) {
@@ -36,6 +38,7 @@ const makeShopItem = async (req, res) => {
   }
 };
 
+// get all shop items
 const getShopItems = async (req, res) => {
   const items = await ShopItem.find();
 
