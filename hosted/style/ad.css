@@ -1,0 +1,22 @@
+#adContainer {
+    position: fixed;
+    top: 5em;
+}
+
+#adContainer, .ad, .ad > img {
+    width: 15em;
+}
+
+.ad > img {
+    position: fixed;
+    background-color: black;
+    padding: 5px;
+}
+
+.adImgLeft {
+    right: 5px;
+}
+
+.adImgRight {
+    left: 5px;
+}

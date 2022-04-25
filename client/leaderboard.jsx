@@ -1,4 +1,5 @@
 const navbar = require('./navbar.jsx');
+const ad = require('./ad.jsx');
 
 const Leaderboard = (props) => {
     let userNodes;
@@ -80,6 +81,7 @@ const init = () => {
     loadLeaderboardFromServer(true);
 
     navbar.renderNavbar();
+    ad.renderAd();
 };
 
 window.onload = init;

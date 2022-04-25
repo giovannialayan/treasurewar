@@ -138,7 +138,7 @@ function create() {
         treasureToDestroy.destroy();
     });
 
-    this.playerWinText = this.add.text(0, 0, '', {fontSize: '32px', fill: '#000', align: 'center'});
+    this.playerWinText = this.add.text(0, 0, '', {fontSize: '32px', fill: '#000', align: 'center', fontFamily: 'Dosis, Arial, sans-serif'});
     this.playerWinText.setDepth(1);
     this.gameOver = false;
 
@@ -169,13 +169,13 @@ function create() {
 
     score = 0;
 
-    scoreText = this.add.text(150, 245, score, {fontSize: '32px', fill: '#000'});
+    scoreText = this.add.text(150, 245, score, {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
     scoreText.setDepth(1);
 
-    gameTimerText = this.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000'});
+    gameTimerText = this.add.text(500, 245, secToMinSec(this.gameTimer), {fontSize: '32px', fill: '#000', fontFamily: 'Dosis, Arial, sans-serif'});
     gameTimerText.setDepth(1);
 
-    challengeText = this.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center'});
+    challengeText = this.add.text(532, 600, '', {fontSize: '40px', fill: '#000', align: 'center', fontFamily: 'Dosis, Arial, sans-serif'});
     challengeText.setDepth(1);
 
     spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);

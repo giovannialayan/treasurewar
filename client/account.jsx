@@ -1,5 +1,6 @@
 const helper = require('./helper.js');
 const navbar = require('./navbar.jsx');
+// const ad = require('./ad.jsx');
 
 const AccountInfo = (props) => {
     let skinNodes;
@@ -128,6 +129,7 @@ const init = async () => {
     });
 
     navbar.renderNavbar();
+    // ad.renderAd();
 };
 
 window.onload = init;

@@ -17,15 +17,24 @@ button, input {
     line-height: 1.25em;
 }
 
+#shop {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
 .itemsContainer {
     display: flex;
     flex-flow: row wrap;
+    align-items: stretch;
+    justify-content: space-around;
+    width: 65%;
 }
 
 .item {
     background-color: #aaa;
-    width: 30%;
-    margin: 10px 0px 0px 10px;
+    width: 45%;
+    margin: 10px 0px;
     padding: 15px;
 
     display: flex;

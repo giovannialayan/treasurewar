@@ -1,6 +1,7 @@
 import * as game from './game.js';
 import * as helper from './helper.js';
 const navbar = require('./navbar.jsx');
+const ad = require('./ad.jsx');
 
 const handleRoomSetup = (e) => {
     e.preventDefault();
@@ -186,6 +187,7 @@ const init = async () => {
     document.querySelector('#leaveRoomButton').addEventListener('click', getRoomList);
 
     navbar.renderNavbar();
+    ad.renderAd();
 };
 
 window.onload = init;
