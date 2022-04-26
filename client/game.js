@@ -46,13 +46,13 @@ let skin;
 let name;
 let mapSize;
 
-const startGame = (room, hard, size, worldDims, accSkin, username) => {
+const startGame = (room, hard, size, worldDims, skinChroma, username) => {
     roomId = room
     hardMode = hard;
     worldWidth = worldDims.width;
     worldHeight = worldDims.height;
     mapSize = size;
-    skin = accSkin;
+    skin = skinChroma;
     name = username;
     game = new Phaser.Game(config);
     leaveButton = document.querySelector('#leaveRoomButton');
@@ -63,14 +63,78 @@ function preload() {
 
     this.load.image('background', `/assets/img/background_${mapSize}.png`);
     this.load.image('treasure', '/assets/img/treasure-mound.png');
-    this.load.image('J1m', '/assets/img/robot.png');
-    this.load.image('K3vin', '/assets/img/robot2.png');
-    this.load.image('C4rla', '/assets/img/robot3.png');
-    this.load.image('B3th', '/assets/img/robot4.png');
-    this.load.image('S0nny', '/assets/img/robot5.png');
-    this.load.image('5u5bot', '/assets/img/susbot.png');
-    this.load.image('Pr1ck', '/assets/img/cactus.png');
-    this.load.image('P3nny', '/assets/img/penguin.png');
+
+    this.load.image('J1m_white',  '/assets/img/robot/robot_white.png');
+    this.load.image('J1m_red',    '/assets/img/robot/robot_red.png');
+    this.load.image('J1m_blue',   '/assets/img/robot/robot_blue.png');
+    this.load.image('J1m_yellow', '/assets/img/robot/robot_yellow.png');
+    this.load.image('J1m_green',  '/assets/img/robot/robot_green.png');
+    this.load.image('J1m_pink',   '/assets/img/robot/robot_pink.png');
+    this.load.image('J1m_purple', '/assets/img/robot/robot_purple.png');
+    this.load.image('J1m_orange', '/assets/img/robot/robot_orange.png');
+
+    this.load.image('K3vin_white',  '/assets/img/robot2/robot2_white.png');
+    this.load.image('K3vin_red',    '/assets/img/robot2/robot2_red.png');
+    this.load.image('K3vin_blue',   '/assets/img/robot2/robot2_blue.png');
+    this.load.image('K3vin_yellow', '/assets/img/robot2/robot2_yellow.png');
+    this.load.image('K3vin_green',  '/assets/img/robot2/robot2_green.png');
+    this.load.image('K3vin_pink',   '/assets/img/robot2/robot2_pink.png');
+    this.load.image('K3vin_purple', '/assets/img/robot2/robot2_purple.png');
+    this.load.image('K3vin_orange', '/assets/img/robot2/robot2_orange.png');
+    
+    this.load.image('C4rla_white',  '/assets/img/robot3/robot3_white.png');
+    this.load.image('C4rla_red',    '/assets/img/robot3/robot3_red.png');
+    this.load.image('C4rla_blue',   '/assets/img/robot3/robot3_blue.png');
+    this.load.image('C4rla_yellow', '/assets/img/robot3/robot3_yellow.png');
+    this.load.image('C4rla_green',  '/assets/img/robot3/robot3_green.png');
+    this.load.image('C4rla_pink',   '/assets/img/robot3/robot3_pink.png');
+    this.load.image('C4rla_purple', '/assets/img/robot3/robot3_purple.png');
+    this.load.image('C4rla_orange', '/assets/img/robot3/robot3_orange.png');
+
+    this.load.image('B3th_white',  '/assets/img/robot4/robot4_white.png');
+    this.load.image('B3th_red',    '/assets/img/robot4/robot4_red.png');
+    this.load.image('B3th_blue',   '/assets/img/robot4/robot4_blue.png');
+    this.load.image('B3th_yellow', '/assets/img/robot4/robot4_yellow.png');
+    this.load.image('B3th_green',  '/assets/img/robot4/robot4_green.png');
+    this.load.image('B3th_pink',   '/assets/img/robot4/robot4_pink.png');
+    this.load.image('B3th_purple', '/assets/img/robot4/robot4_purple.png');
+    this.load.image('B3th_orange', '/assets/img/robot4/robot4_orange.png');
+
+    this.load.image('S0nny_white',  '/assets/img/robot5/robot5_white.png');
+    this.load.image('S0nny_red',    '/assets/img/robot5/robot5_red.png');
+    this.load.image('S0nny_blue',   '/assets/img/robot5/robot5_blue.png');
+    this.load.image('S0nny_yellow', '/assets/img/robot5/robot5_yellow.png');
+    this.load.image('S0nny_green',  '/assets/img/robot5/robot5_green.png');
+    this.load.image('S0nny_pink',   '/assets/img/robot5/robot5_pink.png');
+    this.load.image('S0nny_purple', '/assets/img/robot5/robot5_purple.png');
+    this.load.image('S0nny_orange', '/assets/img/robot5/robot5_orange.png');
+
+    this.load.image('5u5bot_white',  '/assets/img/susbot/susbot_white.png');
+    this.load.image('5u5bot_red',    '/assets/img/susbot/susbot_red.png');
+    this.load.image('5u5bot_blue',   '/assets/img/susbot/susbot_blue.png');
+    this.load.image('5u5bot_yellow', '/assets/img/susbot/susbot_yellow.png');
+    this.load.image('5u5bot_green',  '/assets/img/susbot/susbot_green.png');
+    this.load.image('5u5bot_pink',   '/assets/img/susbot/susbot_pink.png');
+    this.load.image('5u5bot_purple', '/assets/img/susbot/susbot_purple.png');
+    this.load.image('5u5bot_orange', '/assets/img/susbot/susbot_orange.png');
+
+    this.load.image('Pr1ck_white',  '/assets/img/cactus/cactus_white.png');
+    this.load.image('Pr1ck_red',    '/assets/img/cactus/cactus_red.png');
+    this.load.image('Pr1ck_blue',   '/assets/img/cactus/cactus_blue.png');
+    this.load.image('Pr1ck_yellow', '/assets/img/cactus/cactus_yellow.png');
+    this.load.image('Pr1ck_green',  '/assets/img/cactus/cactus_green.png');
+    this.load.image('Pr1ck_pink',   '/assets/img/cactus/cactus_pink.png');
+    this.load.image('Pr1ck_purple', '/assets/img/cactus/cactus_purple.png');
+    this.load.image('Pr1ck_orange', '/assets/img/cactus/cactus_orange.png');
+
+    this.load.image('P3nny_white',  '/assets/img/penguin/penguin_white.png');
+    this.load.image('P3nny_red',    '/assets/img/penguin/penguin_red.png');
+    this.load.image('P3nny_blue',   '/assets/img/penguin/penguin_blue.png');
+    this.load.image('P3nny_yellow', '/assets/img/penguin/penguin_yellow.png');
+    this.load.image('P3nny_green',  '/assets/img/penguin/penguin_green.png');
+    this.load.image('P3nny_pink',   '/assets/img/penguin/penguin_pink.png');
+    this.load.image('P3nny_purple', '/assets/img/penguin/penguin_purple.png');
+    this.load.image('P3nny_orange', '/assets/img/penguin/penguin_orange.png');
 }
 
 function create() {

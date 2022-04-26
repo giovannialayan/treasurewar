@@ -98,7 +98,17 @@ const addItemToAccount = async (req, res) => {
   try {
     const item = await ShopItem.findOne({ name: req.body.name });
     const changedAccount = await Account.findOne({ username: req.session.account.username });
-    changedAccount.skins.push(item);
+
+    if(item.type === 'skin') {
+      changedAccount.skins.push(item);
+    }
+    else if(item.type === 'chroma') {
+      changedAccount.chromas.push(item.name);
+    }
+    else {
+      return res.status(400).json({error: `item type ${item.type} not implemented`});
+    }
+
     await changedAccount.save();
     req.session.account = Account.toAPI(changedAccount);
     return res.status(201).json({ account: req.session.account });
@@ -157,6 +167,7 @@ const getAccountInfo = async (req, res) => {
         wins: accountInfo.wins,
         _id: accountInfo._id,
         skins: accountInfo.skins,
+        chromas: accountInfo.chromas,
         equippedSkin: accountInfo.equippedSkin,
         topThrees: accountInfo.topThrees,
       },

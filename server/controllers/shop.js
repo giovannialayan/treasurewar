@@ -7,9 +7,9 @@ const shopPage = (req, res) => res.render('shop');
 
 // create a new shop item
 const makeShopItem = async (req, res) => {
-  if (!req.body.name || !req.body.desc || !req.body.img
+  if (!req.body.name || (!req.body.desc && req.body.desc !== '') || !req.body.img || !req.body.type
     || (!req.body.price && req.body.price !== 0) || !req.body.password) {
-    return res.status(400).json({ error: 'name, desc, img, price, and password are required' });
+    return res.status(400).json({ error: 'name, desc, img, price, type, and password are required' });
   }
 
   if (req.body.password !== process.env.SHOP_PASSWORD) {
@@ -21,13 +21,14 @@ const makeShopItem = async (req, res) => {
     img: req.body.img,
     desc: req.body.desc,
     price: req.body.price,
+    type: req.body.type,
   };
 
   try {
     const newItem = new ShopItem(itemData);
     await newItem.save();
     return res.status(201).json({
-      name: newItem.name, img: newItem.img, desc: newItem.desc, price: newItem.price,
+      name: newItem.name, img: newItem.img, desc: newItem.desc, price: newItem.price, type: newItem.type,
     });
   } catch (err) {
     console.log(err);
@@ -41,8 +42,18 @@ const makeShopItem = async (req, res) => {
 // get all shop items
 const getShopItems = async (req, res) => {
   const items = await ShopItem.find();
+  const skins = [];
+  const chromas = [];
+  items.forEach((item) => {
+    if(item.type === 'skin') {
+      skins.push(item);
+    }
+    else if(item.type === 'chroma') {
+      chromas.push(item);
+    }
+  });
 
-  return res.json({ items });
+  return res.json({ skins: skins, chromas: chromas });
 };
 
 module.exports = {

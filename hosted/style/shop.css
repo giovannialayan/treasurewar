@@ -17,13 +17,13 @@ button, input {
     line-height: 1.25em;
 }
 
-#shop {
+#shop, .itemsContainer {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
 }
 
-.itemsContainer {
+.skinsContainer, .chromasContainer {
     display: flex;
     flex-flow: row wrap;
     align-items: stretch;
@@ -31,7 +31,7 @@ button, input {
     width: 65%;
 }
 
-.item {
+.skinItem {
     background-color: #aaa;
     width: 40%;
     margin: 10px 2.5%;
@@ -43,8 +43,28 @@ button, input {
     align-items: center;
 }
 
-.itemImg {
+.chromaItem {
+    background-color: #aaa;
+    width: 20%;
+    margin: 10px 2.5%;
+    padding: 15px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.chromaItem > .itemDesc{
+    display: none;
+}
+
+.skinItem > .itemImg {
     width: 96px;
+}
+
+.chromaItem > .itemImg {
+    width: 32px;
 }
 
 .itemButton {

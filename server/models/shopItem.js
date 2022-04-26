@@ -22,6 +22,10 @@ const ShopItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  type: {
+    type: String,
+    required: true,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -33,7 +37,7 @@ ShopItemSchema.statics.findByName = (name, callback) => {
     name: mongoose.Types.ObjectId(name),
   };
 
-  return ShopItemSchema.find(search).select('name img desc price').lean().exec(callback);
+  return ShopItemSchema.find(search).select('name img desc price type').lean().exec(callback);
 };
 
 ShopItemModel = mongoose.model('ShopItem', ShopItemSchema);
