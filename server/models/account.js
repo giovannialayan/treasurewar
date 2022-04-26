@@ -20,7 +20,7 @@ const AccountSchema = new mongoose.Schema({
   skins: {
     type: Array,
     default: [{
-      _id: '62618a441bde4611c5bbb711', img: '/assets/img/robot_96px.png', name: 'J1m', desc: 'J1m\'s a hard worker, it won\'t complain about any job you throw at it.', type: 'skin'
+      _id: '62618a441bde4611c5bbb711', img: '/assets/img/robot_96px.png', name: 'J1m', desc: 'J1m\'s a hard worker, it won\'t complain about any job you throw at it.', type: 'skin',
     }],
   },
   chromas: {

@@ -99,14 +99,12 @@ const addItemToAccount = async (req, res) => {
     const item = await ShopItem.findOne({ name: req.body.name });
     const changedAccount = await Account.findOne({ username: req.session.account.username });
 
-    if(item.type === 'skin') {
+    if (item.type === 'skin') {
       changedAccount.skins.push(item);
-    }
-    else if(item.type === 'chroma') {
+    } else if (item.type === 'chroma') {
       changedAccount.chromas.push(item.name);
-    }
-    else {
-      return res.status(400).json({error: `item type ${item.type} not implemented`});
+    } else {
+      return res.status(400).json({ error: `item type ${item.type} not implemented` });
     }
 
     await changedAccount.save();

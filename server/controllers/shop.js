@@ -28,7 +28,11 @@ const makeShopItem = async (req, res) => {
     const newItem = new ShopItem(itemData);
     await newItem.save();
     return res.status(201).json({
-      name: newItem.name, img: newItem.img, desc: newItem.desc, price: newItem.price, type: newItem.type,
+      name: newItem.name,
+      img: newItem.img,
+      desc: newItem.desc,
+      price: newItem.price,
+      type: newItem.type,
     });
   } catch (err) {
     console.log(err);
@@ -45,15 +49,14 @@ const getShopItems = async (req, res) => {
   const skins = [];
   const chromas = [];
   items.forEach((item) => {
-    if(item.type === 'skin') {
+    if (item.type === 'skin') {
       skins.push(item);
-    }
-    else if(item.type === 'chroma') {
+    } else if (item.type === 'chroma') {
       chromas.push(item);
     }
   });
 
-  return res.json({ skins: skins, chromas: chromas });
+  return res.json({ skins, chromas });
 };
 
 module.exports = {

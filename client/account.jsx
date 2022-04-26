@@ -94,7 +94,7 @@ const AccountInfo = (props) => {
                     } id={'img' + skin.name} className="skinImg"/>
                     <p className="skinName">{skin.name}</p>
                     <p className="skinDesc">{skin.desc}</p>
-                    <div>
+                    <div className="chromaSelectContainer">
                         <label htmlFor="chroma" className="skinChromaLabel"></label>
                         <select 
                             id={'chroma' + skin.name} 

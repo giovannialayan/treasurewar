@@ -12,7 +12,7 @@ body {
     font-family: Dosis, sans-serif;
 }
 
-button, input {
+button, input, select {
     font-family: Dosis-Medium, sans-serif;
     line-height: 1.25em;
 }
@@ -46,6 +46,10 @@ button, input {
     justify-content: space-around;
     margin: auto;
     padding: 0px;
+}
+
+.chromaSelectContainer {
+    margin-bottom: 15px;
 }
 
 .skin {
