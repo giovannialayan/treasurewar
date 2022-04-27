@@ -4,29 +4,30 @@ https://socket.io/docs/v4/
 https://developer.mozilla.org/en-US/docs/Web
 https://mongoosejs.com/docs/api.html
 
-https://stackoverflow.com/questions/63875088/why-is-my-resource-getting-blocked-even-though-i-allowed-it-specifically-in-the
-https://stackoverflow.com/questions/59484216/refused-to-load-the-image-blob-because-it-violates-the-following-content-s
+
 
 What is the intended purpose of your application?
-it is a game that can be played with multiple people at once where players have to collect treasure from around the map by completing keyboard challenges.
-
-What work has been completed for this milestone?
-the game is done and socket.io has been implemented for realtime multiplayer in the game.
-
-What work is left, and how do you plan to complete it?
-i have to add accounts and an account page, room creation and joining, a shop page for buying skins, and a leaderboard page that displays players with the most first place finishes
+It is a game that can be played with multiple people at once where players have to collect treasure from around the map by completing keyboard challenges. Players can buy and equip skins and chromas for the skins which appear in the game and other players can see. There is also a leaderboard that shows the players with the most wins and top three finishes.
 
 How are you using React?
-i have made a room creation form component that lets you create a room and a room list component that displays the rooms.
-i will make a component for the leaderboard to display the list of players and the number of their first place finishes, for the shop to display and be able to buy skins, and for the account page to display and select what skin to use.
+I have made a room creation form component that lets you create a room. A room list component that displays the rooms. A shop component that displays the items stored in the shop and allows users to buy them. A leaderboard component that displays the users with the highest wins and top three finishes in order from greatest to least. An account component that shows the user their number of wins, number of games played, number of top three finishes, skins and chromas for those skins. An ad component that chooses and displays a random placeholder ad. A navbar component that displays the navbar at the top of the page.
 
 What data are you storing in MongoDB?
-i will store player accounts and the leaderboard data.
+I am storing accounts and shop items in MongoDB.
 
-What is your profit model?
-it will be buying skins and ads on the sides.
+What went right in the development of this project?
+I was able to make the phaser game and integrate socket.io without any major issues and I was able to get rooms working very quickly. I also added a more than I originally planned.
 
-Do you have a plan for going above and beyond? If so, what is it?
+What went wrong in the development of this project?
+
+
+What did you learn while developping this project?
+I learned how to use phaser to make games. I learned how to use socket.io. I learned how to sync clients on the server and manage parts of the game on the server.
+
+If you were to continue, what would you do to improve your application?
+I would add a currency that is used in the shop, a small amount is obtained on winning and placing top three and large amounts can be purchased. I would add more to the shop like map backgrounds, treasure mounds, and a border for the game window. I would add more skins and chromas, and chromas with more detail. I would add a scoreboard to the game so you can press a button to see everyone's scores and showing usernames above players.
+
+If you went above and beyond, how did you do so?
 using websockets for realtime multiplayer.
 
 If you used any borrowed code or code fragments, where did you get them from?
@@ -50,24 +51,92 @@ https://github.com/ivangfr/socketio-express-phaser3
 - app.js: playerMovement event
 - game.js: playerMoved event, addPlayer function, addOtherPlayer function, update for player movement and emitting playerMovement
 
+https://stackoverflow.com/questions/63875088/why-is-my-resource-getting-blocked-even-though-i-allowed-it-specifically-in-the
+https://stackoverflow.com/questions/59484216/refused-to-load-the-image-blob-because-it-violates-the-following-content-s
+- i used this to set up helmet to allow my images to be loaded and to allow the cdns im using to be loaded
+- app.js: line 42
+
 Endpoints
 URL: /makeRoom
 Supported Methods: POST
-Middleware: will use requires secure, requires login
-Query Params: roomName (name of the room to display), maxPlayers (max number of players that can be in the room at once), minPlayers (min number of players required to start the game), time (max minutes the game can go on for if all treasures haven't been collected), hardOn (if hard mode is turned on)
+Middleware: requires secure, requires login
+Query Params: roomName (name of the room to display), maxPlayers (max number of players that can be in the room at once), minPlayers (min number of players required to start the game), time (max minutes the game can go on for if all treasures haven't been collected), hardOn (if hard mode is turned on), size (size of the map), numTreasures (number of treasure mounds to place on the map)
 Description: creates a new room with input settings that is added to the rooms list that can be joined
-Return Type: JSON
-
-URL: /joinRoom
-Supported Methods: POST
-Middleware: will use requires secure, requires login
-Query Params: roomId (id of the room to join)
-Description: joins the client to room with the input id
 Return Type: JSON
 
 URL: /getRooms
 Supported Methods: GET
-Middleware: will use requires secure, requires login
+Middleware: requires secure, requires login
 Query Params: none
 Description: gets the list of rooms
+Return Type: JSON
+
+URL: /login
+Supported Methods: POST
+Middleware: requires secure, requires logout
+Query Params: username, pass
+Description: logs user in if username exists and pass matches user's password
+Return Type: JSON
+
+URL: /signup
+Supported Methods: POST
+Middleware: requires secure, requires logout
+Query Params: username, pass, pass2
+Description: creates new user and logs user in if username doesnt exist yet and pass and pass2 match
+Return Type: JSON
+
+URL: /logout
+Supported Methods: GET
+Middleware: requires secure, requires login
+Query Params: none
+Description: destroys user's session and redirects to login page
+Return Type: none
+
+URL: /changePass
+Supported Methods: POST
+Middleware: requires secure, requires login
+Query Params: currPass, newPass, newPass2
+Description: changes the user's password to newPass if currPass matches their current password and newPass and newPass2 match
+Return Type: JSON
+
+URL: /getAccount
+Supported Methods: GET
+Middleware: requires secure, requires login
+Query Params: none
+Description: sends back the user's account information that is required by the client to display or determine what is owned
+Return Type: JSON
+
+URL: /equipSkin
+Supported Methods: POST
+Middleware: requires secure, requires login
+Query Params: name (skin name + _ + chroma name)
+Description: changes the user's equippedSkin to name
+Return Type: JSON
+
+URL: /getShopItems
+Supported Methods: GET
+Middleware: requires secure, requires login
+Query Params: none
+Description: sends back all shop items as arrays of each type of shop item
+Return Type: JSON
+
+URL: /buyItem
+Supported Methods: POST
+Middleware: requires secure, requires login
+Query Params: name (item name)
+Description: adds the item to the user's account based on the item's type
+Return Type: JSON
+
+URL: /makeShopItem
+Supported Methods: POST
+Middleware: requires secure, requires admin
+Query Params: name (item name), desc (description of item), img (image source path), type (type of item), price (price of item), password
+Description: creates new item and adds it to database if the user is an admin account and password matches SHOP_PASSWORD in the config vars
+Return Type: JSON
+
+URL: /getLeaderboard
+Supported Methods: GET
+Middleware: requires secure, requires login
+Query Params: none
+Description: sends back two arrays of users, one ordered by wins decreasing and the other ordered by top threes decreasing
 Return Type: JSON

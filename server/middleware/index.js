@@ -21,6 +21,7 @@ const requiresSecure = (req, res, next) => {
   return next();
 };
 
+// only go through if the user is logged in and logged in to an admin account
 const requiresAdmin = (req, res, next) => {
   if (!req.session.account) {
     return res.status(400).json({ error: 'logging into an admin account is required for this request' });
